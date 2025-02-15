@@ -1,615 +1,41 @@
-// import React, { useState } from 'react';
-// import { FaHotel } from "react-icons/fa6";
-// import { FaPersonCircleCheck } from "react-icons/fa6";
-// import { FaMapMarkerAlt, FaLock } from "react-icons/fa";
-// import { FaHandsHelping } from "react-icons/fa";
-// import { FaTractor } from "react-icons/fa";
-// import { Link, useNavigate } from 'react-router-dom'
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-
-// import axios from 'axios';
-// const Login = () => {
-//   const [retailerState, setRetailerState] = useState("login");
-//   const [consumerState, setConsumerState] = useState("login");
-//   const [ngoState, setNgoState] = useState("login");
-//   const [volunteerState, setVolunteerState] = useState("login");
-
-//   const [consumerEmail, setConsumerEmail] = useState("");
-//   const [consumerPassword, setConsumerPassword] = useState("");
-//   const [consumerUsername, setConsumerUsername] = useState("");
-
-//   const [ngoEmail, setNgoEmail] = useState("");
-//   const [ngoPassword, setNgoPassword] = useState("");
-//   const [ngoUsername, setNgoUsername] = useState("");
-
-//   const [retailerEmail, setRetailerEmail] = useState("");
-//   const [retailerPassword, setRetailerPassword] = useState("");
-//   const [retailerUsername, setRetailerUsername] = useState("");
-
-//   const [volunteerEmail, setVolunteerEmail] = useState("");
-//   const [volunteerPassword, setVolunteerPassword] = useState("");
-//   const [volunteerUsername, setVolunteerUsername] = useState("");
-
-
- 
-
-//   const navigate = useNavigate()
-//   // const { user, setUser } = useContext(UserDataContext)
-
-//   // const submitHandler = async (e) => {
-//   //   e.preventDefault();
-  
-   
-//   //   if (!consumerEmail || !consumerPassword || (consumerState === "signup" && !consumerUsername)) {
-//   //     toast.error("Please fill in all the fields");
-//   //     return;
-//   //   }
-  
-//   //   const userData = consumerState === "signup"
-//   //     ? { email: consumerEmail, password: consumerPassword, username: consumerUsername }
-//   //     : { email: consumerEmail, password: consumerPassword };
-  
-//   //   console.log("Submitting Consumer Data:", userData);
-  
-//   //   try {
-//   //     const response = await axios.post("/api/v1/users/login", userData);
-  
-//   //     if (response.status === 200) {
-//   //       const data = response.data;
-//   //       console.log("Response Data:", data.data);
-
-
-//   //       try {
-//   //         localStorage.setItem("foodItems", JSON.stringify(data.data.updatedFoodItems)); 
-//   //         console.log("Full response data saved to localStorage:", data.data.updatedFoodItems);
-//   //       } catch (error) {
-//   //         console.error("Error saving data to localStorage:", error);
-//   //       }
-  
-//   //       // if (data.updatedFoodItems && Array.isArray(data.updatedFoodItems)) {
-//   //       //   const formattedFoodItems = data.updatedFoodItems.map(item => ({
-//   //       //    expiryDate:item.expiryDate,
-//   //       //    manufacturingDate:item.manufacturingDate,
-//   //       //    name:item.name,
-//   //       //    status:item.status,
-
-//   //       //   }));
-  
-//   //       //   // Store the formatted food items in localStorage
-//   //       //   localStorage.setItem("foodItems", JSON.stringify(formattedFoodItems));
-//   //       //   console.log("Formatted food items saved to localStorage:", formattedFoodItems);
-//   //       // } else {
-//   //       //   console.warn("No valid updated food items or not in array format.", data.updatedFoodItems);
-//   //       // }
-  
-//   //       // Store other relevant data
-//   //       localStorage.setItem("loginSuccess", "Logged in Successfully !");
-//   //       localStorage.setItem("userEmail", consumerEmail);
-  
-//   //       toast.success("Logged in Successfully");
-  
-//   //       setTimeout(() => {
-//   //         navigate("/consumer");
-//   //       }, 1000);
-//   //     } else {
-//   //       console.error("Error:", response.statusText);
-//   //       toast.error("Invalid Credentials");
-//   //     }
-//   //   } catch (error) {
-//   //     console.error("Error during API call:", error);
-//   //     toast.error("Invalid Credentials");
-//   //   } finally {
-//   //     setConsumerEmail("");
-//   //     setConsumerPassword("");
-//   //     if (consumerState === "signup") setConsumerUsername("");
-//   //   }
-//   // };
-  
-  
-
-
-//   // const ngoSubmitHandler = async (e) => {
-//   //   e.preventDefault();
-//   //   const ngoData = ngoState === "signup"
-//   //     ? { email: ngoEmail, password: ngoPassword, username: ngoUsername }
-//   //     : { email: ngoEmail, password: ngoPassword };
-
-//   //   console.log("Submitting NGO Data:", ngoData);
-//   //   try {
-//   //     const response = await axios.post(
-//   //       "/api/v1/ngos/login",
-//   //       ngoData
-//   //     );
-
-//   //     if (response.status === 200) {
-//   //       const data = response.data;
-//   //       console.log("Response Data:", data);
-  
-//   //       // Store success message in localStorage
-//   //       localStorage.setItem("loginSuccess", "Logged in Successfully !");
-//   //       localStorage.setItem("userEmail", ngoEmail);
-//   //       localStorage.setItem("userId", data.data.user._id); // Store user ID
-
-  
-//   //       // Display the toast success message before navigating
-//   //       toast.success("Logged in Successfully");
-  
-//   //       // Delay the navigation to ensure toast shows up
-//   //       setTimeout(() => {
-//   //         navigate("/ngo");
-//   //       }, 1000); // Adjust the timeout as needed (e.g., 1500ms = 1.5s)
-//   //     } else {
-//   //       console.error("Error:", response.statusText);
-//   //       toast.error("Invalid Credentials");
-//   //     }
-//   //   } catch (error) {
-//   //     console.error("Error during API call:", error);
-//   //     toast.error("Invalid Credentials");
-//   //   } finally {
-//   //     setNgoEmail("");
-//   //     setNgoPassword("");
-//   //     if (ngoState === "signup") setNgoUsername("");
-//   //   }
-//   // };
-
-//   // const retailerSubmitHandler = async (e) => {
-//   //   e.preventDefault();
-  
-//   //   const retailerData =
-//   //     retailerState === "signup"
-//   //       ? { email: retailerEmail, password: retailerPassword, username: retailerUsername }
-//   //       : { email: retailerEmail, password: retailerPassword };
-  
-//   //   console.log("Submitting Retailer Data:", retailerData);
-  
-//   //   try {
-//   //     const response = await axios.post("/api/v1/restaurants/login", retailerData);
-  
-//   //     if (response.status === 200) {
-//   //       const data = response.data;
-//   //       console.log("Response Data:", data);
-  
-//   //       // Store the token and user data in localStorage
-//   //       localStorage.setItem("accessToken", data.data.accessToken); // Store accessToken
-//   //       localStorage.setItem("userId", data.data.user._id); // Store user ID
-//   //       localStorage.setItem("userEmail", data.data.user.name); // Store user email
-      
-//   //       localStorage.setItem("loginSuccess", "Logged in Successfully!");
-//   //       localStorage.setItem("data", data);
-  
-//   //       // Display the toast success message before navigating
-//   //       toast.success("Logged in Successfully");
-  
-//   //       // Delay the navigation to ensure toast shows up
-//   //       setTimeout(() => {
-//   //         navigate("/retailer");
-//   //       }, 1000); // Adjust the timeout as needed (e.g., 1500ms = 1.5s)
-//   //     } else {
-//   //       console.error("Error:", response.statusText);
-//   //       toast.error("Invalid Credentials");
-//   //     }
-//   //   } catch (error) {
-//   //     console.error("Error during API call:", error);
-//   //     toast.error("Invalid Credentials");
-//   //   } finally {
-//   //     // Reset form fields
-//   //     setRetailerEmail("");
-//   //     setRetailerPassword("");
-//   //     if (retailerState === "signup") setRetailerUsername(""); // Clear username only for signup
-//   //   }
-//   // };
-
-//   // const volunteerSubmitHandler = async (e) => {
-//   //   e.preventDefault();
-  
-//   //   const volunteerData =
-//   //     retailerState === "signup"
-//   //       ? { email: volunteerEmail, password: volunteerPassword, username: volunteerUsername }
-//   //       : { email: volunteerEmail, password: volunteerPassword };
-  
-//   //   console.log("Submitting volunteer Data:", volunteerData);
-  
-//   //   try {
-//   //     const response = await axios.post("/api/v1/volunteers/login", volunteerData);
-  
-//   //     if (response.status === 200) {
-//   //       const data = response.data;
-//   //       console.log("Response Data:", data);
-  
-//   //       // Store the token and user data in localStorage
-//   //       localStorage.setItem("accessToken", data.data.accessToken); // Store accessToken
-//   //       localStorage.setItem("userId", data.data.loggedInUser._id); // Store user ID
-//   //       localStorage.setItem("userEmail", data.data.loggedInUser.email); // Store user email
-//   //       localStorage.setItem("userName", data.data.loggedInUser.name); // Store user name
-
-//   //       localStorage.setItem("loginSuccess", "Logged in Successfully!");
-//   //       localStorage.setItem("data", JSON.stringify(data));
-  
-//   //       // Display the toast success message before navigating
-//   //       toast.success("Logged in Successfully");
-  
-//   //       // Delay the navigation to ensure toast shows up
-//   //       setTimeout(() => {
-//   //         navigate("/volunteer");
-//   //       }, 1000); // Adjust the timeout as needed (e.g., 1500ms = 1.5s)
-//   //     } else {
-//   //       console.error("Error:", response.statusText);
-//   //       toast.error("Invalid Credentials");
-//   //     }
-//   //   } catch (error) {
-//   //     console.error("Error during API call:", error);
-//   //     toast.error("Invalid Credentials");
-//   //   } finally {
-//   //     // Reset form fields
-//   //     setVolunteerEmail("");
-//   //     setVolunteerPassword("");
-//   //     if (volunteerState === "signup") setVolunteerUsername(""); // Clear username only for signup
-//   //   }
-//   // };
-  
-//   const loginHandler = async (e, role) => {
-//     e.preventDefault();
-//     const userData = { email, password, role };
-
-//     try {
-//         const response = await axios.post("/api/auth", userData);
-
-//         if (response.status === 200) {
-//             const data = response.data;
-//             localStorage.setItem("accessToken", data.data.accessToken);
-//             localStorage.setItem("userId", data.data.user._id);
-//             localStorage.setItem("userEmail", data.data.user.email);
-//             localStorage.setItem("userRole", data.data.user.role);
-//             localStorage.setItem("userName", data.data.user.name); // Store user name
-
-//             toast.success("Logged in Successfully");
-
-//             setTimeout(() => {
-//                 if (data.data.user.role === 'individual') {
-//                     navigate("/consumer");
-//                 } else if (data.data.user.role === 'restaurant') {
-//                     navigate("/restaurant");
-//                 } else if (data.data.user.role === 'ngo') {
-//                     navigate("/ngo");
-//                 } else if (data.data.user.role === 'volunteer') {
-//                     navigate("/volunteer");
-//                 }
-//             }, 1000);
-//         } else {
-//             toast.error("Invalid Credentials");
-//         }
-//     } catch (error) {
-//         toast.error("Invalid Credentials");
-//     }
-// };
-  
-
-//   const toggleFormState = (role) => {
-//     if (role === "retailer") {
-//       setRetailerState(retailerState === "login" ? "signup" : "login");
-//     } else if (role === "consumer") {
-//       setConsumerState((prevState) =>
-//         prevState === "login" ? "signup" : "login"
-//       );
-//     } else if (role === "ngo") {
-//       setNgoState(ngoState === "login" ? "signup" : "login");
-//     } else if (role === "volunteer") {
-//       setVolunteerState(volunteerState === "login" ? "signup" : "login");
-//     }
-//   };
-
-//   return (
-
-//     // <div className="flex justify-center items-center w-full bg-green-100 animate-fadeIn">
-//     //   <div className="w-full p-6 bg-green-100 rounded-lg shadow-lg">
-//     //     {/* Title and Description */}
-//     //     <h1 className="text-5xl font-bold text-center mb-4 text-green-900 flex items-center justify-center">
-//     //       <FaMapMarkerAlt className="text-5xl mr-2 text-green-600" />
-//     //       Access your dashboard
-//     //     </h1>
-//     //     <p className="text-2xl text-center mb-8 text-green-600 font-bold my-6">
-//     //       Select your role and access specialized features
-//     //     </p>
-
-//     //     {/* Login and Sign Up Forms */}
-//     //     <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6">
-
-
-
-//     //       <div className="flex flex-col items-center p-6 rounded-lg shadow-md bg-green-200 transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-//     //         <FaTractor className="text-5xl mb-4 text-green-600" />
-//     //         <h2 className="text-3xl font-semibold mb-4 text-green-800">Volunteers</h2>
-//     //         <div className="w-full mb-4">
-//     //           <label htmlFor="volunteer-email" className="block text-sm font-medium text-black mb-2">Email</label>
-//     //           <input
-//     //             type="email"
-//     //             id="volunteer-email"
-//     //             className="w-full px-4 py-2 border rounded-lg"
-//     //             value={volunteerEmail}
-//     //             onChange={(e) => setVolunteerEmail(e.target.value)}  // Bind email state
-//     //             placeholder="Enter your email"
-//     //           />
-//     //         </div>
-//     //         {volunteerState === "signup" && (
-//     //           <div className="w-full mb-4">
-//     //             <label htmlFor="volunteer-username" className="block text-sm font-medium text-black mb-2">Username</label>
-//     //             <input
-//     //               type="text"
-//     //               id="volunteer-username"
-//     //               className="w-full px-4 py-2 border rounded-lg"
-//     //               value={volunteerUsername}
-//     //               onChange={(e) => setVolunteerUsername(e.target.value)}  // Bind username state
-//     //               placeholder="Enter your username"
-//     //             />
-//     //           </div>
-//     //         )}
-//     //         <div className="w-full mb-4">
-//     //           <label htmlFor="volunteer-password" className="block text-sm font-medium text-black mb-2">Password</label>
-//     //           <input
-//     //             type="password"
-//     //             id="volunteer-password"
-//     //             className="w-full px-4 py-2 border rounded-lg"
-//     //             value={volunteerPassword}
-//     //             onChange={(e) => setVolunteerPassword(e.target.value)}  // Bind password state
-//     //             placeholder="Enter your password"
-//     //           />
-//     //         </div>
-//     //         <button
-//     //           className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500"
-//     //           onClick={volunteerSubmitHandler}  // Trigger the submit handler
-//     //         >
-//     //           <FaLock className="mr-2 inline" />
-//     //           {volunteerState === "login" ? "Login" : "Sign Up"}
-//     //         </button>
-//     //         <p
-//     //           className="text-sm text-black mt-4 cursor-pointer"
-//     //           onClick={() => setVolunteerState((prevState) => prevState === "login" ? "signup" : "login")}  // Toggle between login and signup state
-//     //         >
-//     //           {volunteerState === "login" ? "Not having an account? Click here to register" : "Already have an account? Click here to login"}
-//     //         </p>
-//     //       </div>
-
-
-
-//     //       {/* Retailer Form */}
-//     //       <div className="flex flex-col items-center p-6 rounded-lg shadow-md bg-green-200 transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-//     //         <FaHotel className="text-5xl mb-4 text-green-600" />
-//     //         <h2 className="text-3xl font-semibold mb-4 text-green-800">Restaurants</h2>
-//     //         <div className="w-full mb-4">
-//     //           <label htmlFor="retailer-email" className="block text-sm font-medium text-black mb-2">Email</label>
-//     //           <input
-//     //             type="email"
-//     //             id="retailer-email"
-//     //             className="w-full px-4 py-2 border rounded-lg"
-//     //             value={retailerEmail}
-//     //             onChange={(e) => setRetailerEmail(e.target.value)}
-//     //             placeholder="Enter your email"
-//     //           />
-//     //         </div>
-//     //         {retailerState === "signup" && (
-//     //           <div className="w-full mb-4">
-//     //             <label htmlFor="retailer-username" className="block text-sm font-medium text-black mb-2">Username</label>
-//     //             <input
-//     //               type="text"
-//     //               id="retailer-username"
-//     //               className="w-full px-4 py-2 border rounded-lg"
-//     //               value={retailerUsername}
-//     //               onChange={(e) => setRetailerUsername(e.target.value)}
-//     //               placeholder="Enter your username"
-//     //             />
-//     //           </div>
-//     //         )}
-//     //         <div className="w-full mb-4">
-//     //           <label htmlFor="retailer-password" className="block text-sm font-medium text-black mb-2">Password</label>
-//     //           <input
-//     //             type="password"
-//     //             id="retailer-password"
-//     //             className="w-full px-4 py-2 border rounded-lg"
-//     //             value={retailerPassword}
-//     //             onChange={(e) => setRetailerPassword(e.target.value)}
-//     //             placeholder="Enter your password"
-//     //           />
-//     //         </div>
-//     //         <button
-//     //           className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500"
-//     //           onClick={retailerSubmitHandler}  // Trigger the submit handler
-//     //         >
-//     //           <FaLock className="mr-2 inline" />
-//     //           {retailerState === "login" ? "Login" : "Sign Up"}
-//     //         </button>
-//     //         <p
-//     //           className="text-sm text-black mt-4 cursor-pointer"
-//     //           onClick={() => setRetailerState((prevState) => prevState === "login" ? "signup" : "login")}  // Toggle between login and signup state
-//     //         >
-//     //           {retailerState === "login" ? "Not having an account? Click here to register" : "Already have an account? Click here to login"}
-//     //         </p>
-//     //       </div>
-          
-//     //       {/* Consumer Form */}
-//     //       <div className="flex flex-col items-center p-6 rounded-lg shadow-md bg-green-200 transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-//     //         <FaPersonCircleCheck className="text-5xl mb-4 text-green-600" />
-//     //         <h2 className="text-3xl font-semibold mb-4 text-green-800">Individual Users</h2>
-//     //         <form
-//     //           className="w-full"
-//     //           onSubmit={(e) => {
-//     //             // e.preventDefault();
-//     //             submitHandler(e); // Call your form submission handler here
-//     //           }}
-//     //         >
-//     //           <div className="w-full mb-4">
-//     //             <label
-//     //               htmlFor="consumer-email"
-//     //               className="block text-sm font-medium text-black mb-2"
-//     //             >
-//     //               Email
-//     //             </label>
-//     //             <input
-//     //               required
-//     //               type="email"
-//     //               id="consumer-email"
-//     //               value={consumerEmail}
-//     //               onChange={(e) => setConsumerEmail(e.target.value)}
-//     //               className="w-full px-4 py-2 border rounded-lg"
-//     //               placeholder="Enter your email"
-//     //             />
-//     //           </div>
-//     //           {consumerState === "signup" && (
-//     //             <div className="w-full mb-4">
-//     //               <label
-//     //                 htmlFor="consumer-username"
-//     //                 className="block text-sm font-medium text-black mb-2"
-//     //               >
-//     //                 Username
-//     //               </label>
-//     //               <input
-//     //                 required
-//     //                 type="text"
-//     //                 id="consumer-username"
-//     //                 value={consumerUsername}
-//     //                 onChange={(e) => setConsumerUsername(e.target.value)}
-//     //                 className="w-full px-4 py-2 border rounded-lg"
-//     //                 placeholder="Enter your username"
-//     //               />
-//     //             </div>
-//     //           )}
-//     //           <div className="w-full mb-4">
-//     //             <label
-//     //               htmlFor="consumer-password"
-//     //               className="block text-sm font-medium text-black mb-2"
-//     //             >
-//     //               Password
-//     //             </label>
-//     //             <input
-//     //               required
-//     //               type="password"
-//     //               id="consumer-password"
-//     //               value={consumerPassword}
-//     //               onChange={(e) => setConsumerPassword(e.target.value)}
-//     //               className="w-full px-4 py-2 border rounded-lg"
-//     //               placeholder="Enter your password"
-//     //             />
-//     //           </div>
-//     //           <button
-//     //             type="submit"
-//     //             className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500"
-//     //           >
-//     //             <FaLock className="mr-2 inline" />
-//     //             {consumerState === "login" ? "Login" : "Sign Up"}
-//     //           </button>
-//     //         </form>
-//     //         <p
-//     //           className="text-sm text-black mt-4 cursor-pointer"
-//     //           onClick={() => toggleFormState("consumer")}
-//     //         >
-//     //           {consumerState === "login"
-//     //             ? "Not having an account? Click here to register"
-//     //             : "Already have an account? Click here to login"}
-//     //         </p>
-//     //       </div>
-
-
-//     //       {/* NGO Form */}
-//     //       {/* NGO Form */}
-//     //       <div className="flex flex-col items-center p-6 rounded-lg shadow-md bg-green-200 transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-//     //         <FaHandsHelping className="text-5xl mb-4 text-green-600" />
-//     //         <h2 className="text-3xl font-semibold mb-4 text-green-800">NGOs / Food Banks</h2>
-//     //         <form
-//     //           className="w-full"
-//     //           onSubmit={(e) => {
-//     //             e.preventDefault();
-//     //             ngoSubmitHandler(e); // Call the NGO form submission handler here
-//     //           }}
-//     //         >
-//     //           <div className="w-full mb-4">
-//     //             <label htmlFor="ngo-email" className="block text-sm font-medium text-black mb-2">
-//     //               Email
-//     //             </label>
-//     //             <input
-//     //               required
-//     //               type="email"
-//     //               id="ngo-email"
-//     //               value={ngoEmail}
-//     //               onChange={(e) => setNgoEmail(e.target.value)}
-//     //               className="w-full px-4 py-2 border rounded-lg"
-//     //               placeholder="Enter your email"
-//     //             />
-//     //           </div>
-//     //           {ngoState === "signup" && (
-//     //             <div className="w-full mb-4">
-//     //               <label htmlFor="ngo-username" className="block text-sm font-medium text-black mb-2">
-//     //                 Username
-//     //               </label>
-//     //               <input
-//     //                 required
-//     //                 type="text"
-//     //                 id="ngo-username"
-//     //                 value={ngoUsername}
-//     //                 onChange={(e) => setNgoUsername(e.target.value)}
-//     //                 className="w-full px-4 py-2 border rounded-lg"
-//     //                 placeholder="Enter your username"
-//     //               />
-//     //             </div>
-//     //           )}
-//     //           <div className="w-full mb-4">
-//     //             <label htmlFor="ngo-password" className="block text-sm font-medium text-black mb-2">
-//     //               Password
-//     //             </label>
-//     //             <input
-//     //               required
-//     //               type="password"
-//     //               id="ngo-password"
-//     //               value={ngoPassword}
-//     //               onChange={(e) => setNgoPassword(e.target.value)}
-//     //               className="w-full px-4 py-2 border rounded-lg"
-//     //               placeholder="Enter your password"
-//     //             />
-//     //           </div>
-//     //           <button
-//     //             type="submit"
-//     //             className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500"
-//     //           >
-//     //             <FaLock className="mr-2 inline" />
-//     //             {ngoState === "login" ? "Login" : "Sign Up"}
-//     //           </button>
-//     //         </form>
-//     //         <p
-//     //           className="text-sm text-black mt-4 cursor-pointer"
-//     //           onClick={() => toggleFormState("ngo")}
-//     //         >
-//     //           {ngoState === "login"
-//     //             ? "Not having an account? Click here to register"
-//     //             : "Already have an account? Click here to login"}
-//     //         </p>
-//     //       </div>
-
-
-//     //     </div>
-//     //   </div>
-//        <ToastContainer />
-//     // </div>
-
-
-//   );
-// };
-
-// export default Login;
-
-
 import React, { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { FaLock, FaPersonCircleCheck, FaArrowLeft } from "react-icons/fa6";
+import { FaLock, FaPersonCircleCheck, FaArrowLeft, FaUserPlus } from "react-icons/fa6";
+import "react-toastify/dist/ReactToastify.css";
+import { hourglass } from 'ldrs';
+
+hourglass.register();
 
 const Login = ({ closeModal }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [isLogin, setIsLogin] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        name: "",
+        address: "",
+        pincode: "",
+        role: "individual", 
+        phoneNumber: "",
+        agreeToTerms: false
+    });
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
     const navigate = useNavigate();
+
+    const handleInputChange = (e) => {
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setFormData({
+            ...formData,
+            [e.target.name]: value
+        });
+    };
 
     const loginHandler = async (e) => {
         e.preventDefault();
-        const userData = { email, password };
+        setIsLoading(true);
+        const userData = { email: formData.email, password: formData.password };
     
         try {
             const response = await axios.post("/api/v1/auth/login", userData);
@@ -617,9 +43,7 @@ const Login = ({ closeModal }) => {
     
             if (response.status === 200) {
                 const data = response.data;
-    
-                // ✅ Corrected variable names based on API response
-                localStorage.setItem("accessToken", data.accessToken); // Fix incorrect reference
+                localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("userId", data.user._id);
                 localStorage.setItem("userEmail", data.user.email);
                 localStorage.setItem("userRole", data.user.role);
@@ -636,19 +60,82 @@ const Login = ({ closeModal }) => {
                     } else if (data.user.role === "volunteer") {
                         navigate("/volunteer");
                     }
-                    closeModal(); // Close the modal after navigation
-                }, 1000);
-            } else {
-                toast.error("Invalid Credentials");
+                    closeModal();
+                }, 3000);
             }
         } catch (error) {
             toast.error("Invalid Credentials");
+        } finally {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 3000);
         }
     };
 
+    const registerHandler = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        console.log("Register handler initiated");
+        console.log("Form data:", formData);
+
+        if (!formData.agreeToTerms) {
+            console.log("Terms not agreed to");
+            toast.error("Please agree to Terms & Conditions");
+            setIsLoading(false);
+            return;
+        }
+
+        console.log("Attempting registration request...");
+
+        try {
+            console.log("Attempting registration request...");
+            const response = await axios.post("/api/v1/auth/register", formData);
+            console.log("Registration response:", response);
+
+            if (response.status === 201) {
+                console.log("Registration successful");
+                toast.success("Registration Successful!");
+                setTimeout(() => {
+                    console.log("Switching to login");
+                    setIsLogin(true);
+                }, 1000);
+            }
+        } catch (error) {
+            console.error("Registration error:", error);
+            console.log("Error response:", error.response);
+            
+            toast.error(error.response?.data?.message || "Registration Failed", {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } finally {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 3000);
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 flex items-center justify-center">
+                <l-hourglass 
+                flex items-center justify-center
+                    size="90"
+                    bg-opacity="0.1"
+                    speed="1.75" 
+                    color="white"
+                ></l-hourglass>
+            </div>
+        );
+    }
+
     return (
-        <div className="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-xl space-y-6">
-            {/* Close Button */}
+        <div className="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-xl relative">
             <div className="flex items-center justify-between mb-6">
                 <button
                     onClick={closeModal}
@@ -658,51 +145,196 @@ const Login = ({ closeModal }) => {
                 </button>
             </div>
 
-            {/* Title */}
             <div className="flex flex-col items-center">
-                <FaPersonCircleCheck className="text-6xl mb-4 text-green-600" />
-                <h2 className="text-4xl font-semibold mb-4 text-green-800">USERS</h2>
+                {isLogin ? (
+                    <FaPersonCircleCheck className="text-6xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
+                ) : (
+                    <FaUserPlus className="text-6xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
+                )}
+                <h2 className="text-4xl font-semibold mb-4 text-green-800">
+                    {isLogin ? "Login" : "Register"}
+                </h2>
             </div>
 
-            {/* Form */}
-            <form className="space-y-5" onSubmit={loginHandler}>
-                <div>
-                    <label htmlFor="email" className="block text-gray-700 font-medium mb-2">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Enter your email"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password" className="block text-gray-700 font-medium mb-2">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Enter your password"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="w-full p-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 flex justify-center items-center text-xl"
-                >
-                    <FaLock className="mr-2" />
-                    Login
-                </button>
-            </form>
+            <div className="max-h-[60vh] overflow-y-auto pr-4">
+                <form className="space-y-4" onSubmit={isLogin ? loginHandler : registerHandler}>
+                    {!isLogin && (
+                        <>
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-2">Name:</label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    placeholder="Enter your name"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-2">Phone Number:</label>
+                                <input
+                                    type="tel"
+                                    name="phoneNumber"
+                                    value={formData.phoneNumber}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    placeholder="Enter your phone number"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-2">Address:</label>
+                                <textarea
+                                    name="address"
+                                    value={formData.address}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    placeholder="Enter your address"
+                                    rows="3"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-2">Pincode:</label>
+                                <input
+                                    type="text"
+                                    name="pincode"
+                                    value={formData.pincode}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    placeholder="Enter your pincode"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-2">Role:</label>
+                                <select
+                                    name="role"
+                                    value={formData.role}
+                                    onChange={handleInputChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                >
+                                    <option value="individual">Individual</option>
+                                    <option value="restaurant">Restaurant</option>
+                                    <option value="ngo">NGO</option>
+                                    <option value="volunteer">Volunteer</option>
+                                </select>
+                            </div>
+                        </>
+                    )}
+                    
+                    <div>
+                        <label className="block text-gray-700 font-medium mb-2">Email:</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Enter your email"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-medium mb-2">Password:</label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Enter your password"
+                        />
+                    </div>
 
-            {/* Toast Notifications */}
-            <ToastContainer />
+                    {!isLogin && (
+                        <div className="flex items-center space-x-2 bg-gray-50 p-4 rounded-lg border border-gray-200 hover:bg-gray-100 transition-all duration-300">
+                            <input
+                                type="checkbox"
+                                name="agreeToTerms"
+                                checked={formData.agreeToTerms}
+                                onChange={handleInputChange}
+                                className="w-4 h-4 text-green-600 rounded focus:ring-green-500 cursor-pointer"
+                            />
+                            <label className="text-sm text-gray-700 cursor-pointer select-none">
+                                I agree to the <a href="#" className="text-green-600 hover:text-green-800 font-medium underline">Terms & Conditions</a> and <a href="#" className="text-green-600 hover:text-green-800 font-medium underline">Privacy Policy</a>
+                            </label>
+                        </div>
+                    )}
+
+                    {isLogin && (
+                        <div className="text-right">
+                            <button
+                                type="button"
+                                onClick={() => setShowForgotPassword(true)}
+                                className="text-black hover:text-black text-sm font-medium"
+                            >
+                                Forgot Password?
+                            </button>
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="w-full p-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 flex justify-center items-center text-xl transform hover:scale-105 transition-all duration-300"
+                    >
+                        {isLogin ? (
+                            <>
+                                <FaLock className="mr-2" />
+                                Login
+                            </>
+                        ) : (
+                            <>
+                                <FaUserPlus className="mr-2" />
+                                Register
+                            </>
+                        )}
+                    </button>
+
+                    <div className="text-center mt-4">
+                        <button
+                            type="button"
+                            onClick={() => setIsLogin(!isLogin)}
+                            className="text-black hover:text-black text-sm font-medium hover:underline transition-all duration-300"
+                        >
+                            {isLogin ? "Don't have an account? Register" : "Already have an account? Login"}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {showForgotPassword && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full transform transition-all duration-300 scale-100 hover:scale-105">
+                        <h3 className="text-2xl font-bold text-green-800 mb-4">Forgot Password</h3>
+                        <p className="text-gray-600 mb-6">
+                            Please contact the administrator at <span className="font-semibold">nourishai@gmail.com</span> to reset your password.
+                        </p>
+                        <button
+                            onClick={() => setShowForgotPassword(false)}
+                            className="w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            <ToastContainer 
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
         </div>
     );
 };

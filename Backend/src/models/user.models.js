@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['individual', 'restaurant', 'ngo', 'volunteer'],
         required: true
+    },
+   phoneNumber:{
+        type: String,
+        required: true,
     }
 }, {
     timestamps: true

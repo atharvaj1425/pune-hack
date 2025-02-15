@@ -24,7 +24,7 @@ import NgoCurrentDonationPage from './pages/NgoCurrentDonationPage/currentdonati
 function App() {
   return (
     <Router>
-      <div>
+      
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/consumer/getSingleMeal" element={<GetSingleMeal />} />
@@ -44,7 +44,7 @@ function App() {
           <Route path="/delivery-status" element={<DeliveryStatusPage />} />
           <Route path="/current-donation" element={<NgoCurrentDonationPage />} />
         </Routes>
-      </div>
+     
     </Router>
   );
 }
