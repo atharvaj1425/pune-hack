@@ -1,171 +1,28 @@
-// import React, { useState } from 'react';
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-// import { FaBoxOpen, FaCalendarAlt, FaSortNumericUp, FaCalendarTimes, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-
-// const FoodInventory = () => {
-//   const [foodItems, setFoodItems] = useState([]);
-//   const [formData, setFormData] = useState({
-//     name: '',
-//     manufacturingDate: '',
-//     quantity: '',
-//     expiryDate: '',
-//   });
-
-//   const navigate = useNavigate();
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prevData) => ({
-//       ...prevData,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleAddFoodItem = async () => {
-//     const { name, manufacturingDate, quantity, expiryDate } = formData;
-
-//     if (!name || !manufacturingDate || !quantity || !expiryDate) {
-//       toast.error('Please fill in all fields!');
-//       return;
-//     }
-
-//     try {
-//       console.log("Sending data to backend:", formData);
-//       const response = await axios.post("/api/v1/users/addFoodItem", formData);
-//       console.log("Response from backend:", response.data);
-
-//       const newFoodItem = {
-//         id: response.data._id,
-//         name: response.data.name,
-//         manufacturingDate: response.data.manufacturingDate,
-//         quantity: response.data.quantity,
-//         expiryDate: response.data.expiryDate,
-//         status: response.data.status,
-//       };
-
-//       const storedFoodItems = JSON.parse(localStorage.getItem("foodItems")) || [];
-//       const updatedFoodItems = [...storedFoodItems, newFoodItem];
-
-//       localStorage.setItem("foodItems", JSON.stringify(updatedFoodItems));
-//       setFoodItems(updatedFoodItems);
-
-//       setFormData({ name: '', manufacturingDate: '', quantity: '', expiryDate: '' });
-//       toast.success('Food item added successfully!');
-//     } catch (error) {
-//       console.error("Error adding food item:", error);
-
-//       if (error.response) {
-//         console.error("Backend error response:", error.response.data);
-//         toast.error(error.response.data.error || "Failed to add food item.");
-//       } else {
-//         toast.error('Failed to add food item. Please try again later.');
-//       }
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl space-y-6">
-//       {/* Back Button */}
-//       <div className="flex items-center justify-between mb-6">
-//         <button
-//           onClick={() => navigate('/consumer')}
-//           className="p-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 focus:outline-none"
-//         >
-//           <FaArrowLeft className="text-xl" />
-//         </button>
-//       </div>
-
-//       {/* Title */}
-//       <h2 className="text-3xl font-bold text-center text-gray-800 flex justify-center items-center">
-//         <FaBoxOpen className="mr-3 text-green-600" />
-//         Food Items Inventory
-//       </h2>
-
-//       {/* Input Form */}
-//       <div className="space-y-5">
-//         <div>
-//           <label className="block text-gray-700 font-medium mb-2 flex items-center">
-//             <FaBoxOpen className="mr-2 text-green-500" /> Name of Food Item:
-//           </label>
-//           <input
-//             type="text"
-//             name="name"
-//             value={formData.name}
-//             onChange={handleInputChange}
-//             placeholder="Enter food item name"
-//             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-//           />
-//         </div>
-//         <div>
-//           <label className="block text-gray-700 font-medium mb-2 flex items-center">
-//             <FaCalendarAlt className="mr-2 text-green-500" /> Manufacturing Date:
-//           </label>
-//           <input
-//             type="date"
-//             name="manufacturingDate"
-//             value={formData.manufacturingDate}
-//             onChange={handleInputChange}
-//             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-//           />
-//         </div>
-//         <div>
-//           <label className="block text-gray-700 font-medium mb-2 flex items-center">
-//             <FaSortNumericUp className="mr-2 text-green-500" /> Quantity:
-//           </label>
-//           <input
-//             type="String"
-//             name="quantity"
-//             value={formData.quantity}
-//             onChange={handleInputChange}
-//             placeholder="Enter quantity"
-//             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-//           />
-//         </div>
-//         <div>
-//           <label className="block text-gray-700 font-medium mb-2 flex items-center">
-//             <FaCalendarTimes className="mr-2 text-green-500" /> Expiry Date:
-//           </label>
-//           <input
-//             type="date"
-//             name="expiryDate"
-//             value={formData.expiryDate}
-//             onChange={handleInputChange}
-//             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-//           />
-//         </div>
-//         <button
-//           onClick={handleAddFoodItem}
-//           className="w-full p-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 flex justify-center items-center text-xl"
-//         >
-//           Add Food Item <FaCheckCircle className="ml-2 text-white" />
-//         </button>
-//       </div>
-
-//       {/* Toast Notifications */}
-//       <ToastContainer />
-//     </div>
-//   );
-// };
-
-// export default FoodInventory;
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FaBoxOpen, FaCalendarAlt, FaSortNumericUp, FaCalendarTimes, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
+import { 
+  FaBoxOpen, FaCalendarAlt, FaSortNumericUp, FaCalendarTimes, FaCheckCircle, 
+  FaTimes, FaQuoteLeft, FaQuoteRight 
+} from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import axios from 'axios';
 
 const FoodInventory = ({ closeModal }) => {
-  const [foodItems, setFoodItems] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     manufacturingDate: '',
     quantity: '',
     expiryDate: '',
   });
+
+  useEffect(() => {
+    AOS.init({ duration: 1000 });
+  }, []);
+
+  const quote = "Every meal shared is a step towards a better world.";
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -177,127 +34,110 @@ const FoodInventory = ({ closeModal }) => {
 
   const handleAddFoodItem = async () => {
     const { name, manufacturingDate, quantity, expiryDate } = formData;
-
     if (!name || !manufacturingDate || !quantity || !expiryDate) {
       toast.error('Please fill in all fields!');
       return;
     }
 
     try {
-      console.log("Sending data to backend:", formData);
-      const response = await axios.post("/api/v1/users/addFoodItem", formData);
-      console.log("Response from backend:", response.data);
-
-      const newFoodItem = {
-        id: response.data._id,
-        name: response.data.name,
-        manufacturingDate: response.data.manufacturingDate,
-        quantity: response.data.quantity,
-        expiryDate: response.data.expiryDate,
-        status: response.data.status,
-      };
-
-      const storedFoodItems = JSON.parse(localStorage.getItem("foodItems")) || [];
-      const updatedFoodItems = [...storedFoodItems, newFoodItem];
-
-      localStorage.setItem("foodItems", JSON.stringify(updatedFoodItems));
-      setFoodItems(updatedFoodItems);
-
-      setFormData({ name: '', manufacturingDate: '', quantity: '', expiryDate: '' });
+      await axios.post("/api/v1/users/addFoodItem", formData);
       toast.success('Food item added successfully!');
-      closeModal(); // Close the modal on successful submission
+      closeModal();
     } catch (error) {
-      console.error("Error adding food item:", error);
-
-      if (error.response) {
-        console.error("Backend error response:", error.response.data);
-        toast.error(error.response.data.error || "Failed to add food item.");
-      } else {
-        toast.error('Failed to add food item. Please try again later.');
-      }
+      toast.error('Failed to add food item. Please try again later.');
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl space-y-6">
-      {/* Close Button */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div 
+        className="bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-lg max-h-[90vh] overflow-y-auto relative"
+        data-aos="flip-up"
+      >
+        {/* Close Button */}
         <button
           onClick={closeModal}
-          className="p-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 focus:outline-none"
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition"
         >
-          <FaArrowLeft className="text-xl" />
+          <FaTimes className="text-2xl" />
         </button>
+
+        {/* Title with Bounce Animation */}
+        <div className="text-center space-y-2">
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          >
+            <FaBoxOpen className="text-5xl text-green-600 mx-auto" />
+          </motion.div>
+          <h1 className="text-2xl font-bold">Food Inventory</h1>
+        </div>
+
+        {/* Quote */}
+        <div className="text-center my-4 text-gray-600 italic flex justify-center items-center">
+          <FaQuoteLeft className="text-green-500 mr-2" />
+          <span>{quote}</span>
+          <FaQuoteRight className="text-green-500 ml-2" />
+        </div>
+
+        {/* Form */}
+        <div className="space-y-4">
+          <div>
+            <label className="block font-semibold">Food Item Name:</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+              placeholder="Enter food item name"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold">Manufacturing Date:</label>
+            <input
+              type="date"
+              name="manufacturingDate"
+              value={formData.manufacturingDate}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold">Quantity:</label>
+            <input
+              type="number"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+              placeholder="Enter quantity"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold">Expiry Date:</label>
+            <input
+              type="date"
+              name="expiryDate"
+              value={formData.expiryDate}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-md"
+            />
+          </div>
+
+          <button
+            onClick={handleAddFoodItem}
+            className="w-full p-3 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 transition flex justify-center items-center"
+          >
+            Add Food Item <FaCheckCircle className="ml-2" />
+          </button>
+        </div>
+
+        <ToastContainer />
       </div>
-
-      {/* Title */}
-      <h2 className="text-3xl font-bold text-center text-gray-800 flex justify-center items-center">
-        <FaBoxOpen className="mr-3 text-green-600" />
-        Food Items Inventory
-      </h2>
-
-      {/* Input Form */}
-      <div className="space-y-5">
-        <div>
-          <label className="block text-gray-700 font-medium mb-2 flex items-center">
-            <FaBoxOpen className="mr-2 text-green-500" /> Name of Food Item:
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Enter food item name"
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 font-medium mb-2 flex items-center">
-            <FaCalendarAlt className="mr-2 text-green-500" /> Manufacturing Date:
-          </label>
-          <input
-            type="date"
-            name="manufacturingDate"
-            value={formData.manufacturingDate}
-            onChange={handleInputChange}
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 font-medium mb-2 flex items-center">
-            <FaSortNumericUp className="mr-2 text-green-500" /> Quantity:
-          </label>
-          <input
-            type="String"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleInputChange}
-            placeholder="Enter quantity"
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 font-medium mb-2 flex items-center">
-            <FaCalendarTimes className="mr-2 text-green-500" /> Expiry Date:
-          </label>
-          <input
-            type="date"
-            name="expiryDate"
-            value={formData.expiryDate}
-            onChange={handleInputChange}
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <button
-          onClick={handleAddFoodItem}
-          className="w-full p-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 flex justify-center items-center text-xl"
-        >
-          Add Food Item <FaCheckCircle className="ml-2 text-white" />
-        </button>
-      </div>
-
-      {/* Toast Notifications */}
-      <ToastContainer />
     </div>
   );
 };

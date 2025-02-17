@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { LuLeaf } from 'react-icons/lu';
 import Modal from 'react-modal';
 import Login from '../../Components/Homepage/Login';
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 
 // Set the app element for react-modal
 Modal.setAppElement('#root');
@@ -35,6 +38,10 @@ const HomePage = () => {
 
     return () => clearInterval(interval);
   }, []);
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true, mirror: false });
+  }, []);
+
 
   const toggleLoginPopup = () => {
     setShowLoginPopup(!showLoginPopup);
@@ -42,8 +49,9 @@ const HomePage = () => {
 
   return (
     <div className="bg-green-100 min-h-screen flex flex-col relative w-full">
+
       {/* Header Section */}
-      <header className="flex justify-between items-center px-3 py-2 sm:px-4 md:px-6 lg:px-8 w-full">
+      <header className="flex justify-between items-center px-3 py-2 sm:px-4 md:px-6 lg:px-8 w-full " data-aos="fade-up" data-aos-duration="1000">
         <div className="flex items-center">
           <LuLeaf className="text-green-500 text-2xl sm:text-3xl md:text-4xl lg:text-5xl mr-2 hover:rotate-[-45deg] transition-transform duration-300" />
           <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-bold text-green-900">NourishAI</h1>
@@ -57,7 +65,7 @@ const HomePage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center text-center px-3 sm:px-4 py-6 sm:py-8 md:py-10 lg:py-12 bg-green-100">
+      <section className="flex flex-col items-center justify-center text-center px-3 sm:px-4 py-6 sm:py-8 md:py-10 lg:py-12 bg-green-100" >
         <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-bold text-green-800 mb-3 sm:mb-4 animate-fade-in">
           Reducing Food Waste, One Meal at a Time
         </h2>
@@ -67,7 +75,7 @@ const HomePage = () => {
       </section>
 
       {/* Flowchart Section */}
-      <section className="p-3 sm:p-4 md:p-6 lg:p-8 bg-green-100">
+      <section className="p-3 sm:p-4 md:p-6 lg:p-8 bg-green-100 "data-aos="flip-right" data-aos-duration="1000">
         <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-center text-green-800 mb-4 sm:mb-6">
           How It Works
         </h3>
@@ -113,7 +121,7 @@ const HomePage = () => {
       {/* Image and Carousel Section */}
       <section className="relative p-3 sm:p-4 md:p-6 lg:p-8 bg-green-100 rounded-lg flex flex-col md:flex-row gap-3 sm:gap-4">
         {/* Food Sharing Image */}
-        <div className="w-full md:w-7/12 h-[16rem] sm:h-[20rem] md:h-[24rem] lg:h-96">
+        <div className="w-full md:w-7/12 h-[16rem] sm:h-[20rem] md:h-[24rem] lg:h-96" data-aos="fade-right" data-aos-duration="1000">
           <img
             src="/food-sharing2.png"
             alt="Food Sharing"
@@ -122,7 +130,7 @@ const HomePage = () => {
         </div>
 
         {/* Carousel Card */}
-        <div className="w-full md:w-5/12 flex justify-center items-center h-[16rem] sm:h-[20rem] md:h-[24rem] lg:h-96">
+        <div className="w-full md:w-5/12 flex justify-center items-center h-[16rem] sm:h-[20rem] md:h-[24rem] lg:h-96" data-aos="fade-left" data-aos-duration="1000">
           {/* First Card - Text Only */}
           {currentCard === 0 && (
             <div className="bg-green-100 shadow-md rounded-lg overflow-hidden w-full h-full p-3 sm:p-4 md:p-5 lg:p-6 transform transition duration-500 ease-in-out hover:scale-105 hover:shadow-2xl">
@@ -137,7 +145,7 @@ const HomePage = () => {
 
           {/* Second Card - Image and Text */}
           {currentCard !== 0 && (
-            <div className="bg-green-100 shadow-md rounded-lg overflow-hidden w-full h-full transform transition duration-500 ease-in-out hover:scale-105 hover:shadow-2xl">
+            <div className="bg-green-100 shadow-md rounded-lg overflow-hidden w-full h-full transform transition duration-500 ease-in-out hover:scale-105 hover:shadow-2xl" data-aos="fade-right" data-aos-duration="1000">
               <div className="h-3/4">
                 <img
                   src={carouselData[currentCard].imgSrc}
@@ -157,7 +165,7 @@ const HomePage = () => {
       {/* New Innovative Sections */}
       
       {/* Statistics Section with Counter Animation */}
-      <section className="py-12 bg-gradient-to-r from-green-800 to-green-800">
+      <section className="py-12 bg-gradient-to-r from-green-800 to-green-800" data-aos="flip-up" data-aos-duration="1000">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center text-white">
@@ -177,7 +185,7 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials Section with Parallax Effect */}
-      <section className="py-16 bg-green-100">
+      <section className="py-16 bg-green-100" data-aos="flip-up" data-aos-duration="1000">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-green-800 mb-12">What People Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -187,13 +195,13 @@ const HomePage = () => {
               <h4 className="font-semibold text-green-800">Atharva Ajagekar</h4>
               <p className="text-sm text-green-600">Restaurant Owner</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-lg transform hover:-translate-y-2 transition duration-300">
+            <div className="bg-white p-6 rounded-lg shadow-lg transform hover:-translate-y-2 transition duration-300 " data-aos="fade-right" data-aos-duration="1000">
               <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="User" className="w-16 h-16 rounded-full mx-auto mb-4"/>
               <p className="text-gray-600 italic mb-4">"The platform has streamlined our food distribution process significantly."</p>
               <h4 className="font-semibold text-green-800">Srushti Jadhav</h4>
               <p className="text-sm text-green-600">NGO Director</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-lg transform hover:-translate-y-2 transition duration-300">
+            <div className="bg-white p-6 rounded-lg shadow-lg transform hover:-translate-y-2 transition duration-300 " data-aos="fade-right" data-aos-duration="1000">
               <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="User" className="w-16 h-16 rounded-full mx-auto mb-4"/>
               <p className="text-gray-600 italic mb-4">"Proud to be part of this movement to reduce food waste."</p>
               <h4 className="font-semibold text-green-800">Tejas Shinde</h4>
@@ -204,7 +212,7 @@ const HomePage = () => {
       </section>
 
       {/* Call to Action Section with Floating Elements */}
-      <section className="relative py-20 bg-gradient-to-b from-green-800 to-green-900 overflow-hidden">
+      <section className="relative py-20 bg-gradient-to-b from-green-800 to-green-900 overflow-hidden" data-aos="flip-up" data-aos-duration="1000">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center text-white">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Make a Difference?</h2>

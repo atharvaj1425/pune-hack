@@ -1,36 +1,38 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const Fridge = () => {
-  const handleView3D = () => {
-    window.open(
-      'https://clara.io/player/v2/a0624cee-831c-4ecc-ba48-12300c8ffbfa?wait=true',
-      '_blank'
-    );
-  };
+  const mapContainerRef = useRef(null);
+
+  useEffect(() => {
+    const loadGoogleMap = () => {
+      // Make sure the script is loaded and the API is ready
+      if (window.google && window.google.maps) {
+        new window.google.maps.Map(mapContainerRef.current, {
+          center: { lat: 19.076, lng: 72.8777 }, // Mumbai coordinates
+          zoom: 12,
+        });
+      }
+    };
+
+    // Load the Google Maps script dynamically
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAJ3KUzqKJfvZeJ5TsYzK00stAtFP_tZS8&callback=loadGoogleMap`;
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Global callback to initialize the map
+    window.loadGoogleMap = loadGoogleMap;
+
+    // Cleanup the script when the component unmounts
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   return (
-    <div>
-      <div className="bg-white shadow rounded-lg p-4 flex flex-col items-center text-center border border-black relative h-60 overflow-hidden">
-        {/* Fridge Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center rounded-lg"
-          style={{
-            backgroundImage: 'url(/fridge.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        ></div>
-        
-        {/* Overlay Content */}
-        <div className="relative z-10 flex flex-col justify-center items-center h-full w-full">
-          <button
-            onClick={handleView3D}
-            className="bg-black bg-opacity-50 text-white font-bold text-lg px-4 py-2 rounded-lg shadow"
-          >
-            View in 3D
-          </button>
-        </div>
-      </div>
+    <div className="bg-white shadow rounded-lg flex flex-col items-center text-center border border-black relative h-70 overflow-hidden">
+      {/* Google Map will be inserted here */}
+      <div ref={mapContainerRef} style={{ height: '100%', width: '100%' }} />
     </div>
   );
 };

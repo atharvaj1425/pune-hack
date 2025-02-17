@@ -37,8 +37,8 @@ const Map = () => {
     <div className="p-4">
       {/* Header Section */}
       <div className="flex items-center justify-center mb-4">
-        <img src="/ngo.png" alt="NGO Icon" className="w-10 h-10 mr-3" />
-        <h2 className="text-4xl font-bold">NGOs Near Me</h2>
+       
+       
       </div>
 
       {/* Google Map */}
