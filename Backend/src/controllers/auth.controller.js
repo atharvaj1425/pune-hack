@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const registerUser = async(req, res) => {
     try {
         const { email, name, password, address, pincode, role, phoneNumber } = req.body;
-        //const hashedPassword = await bcrypt.hash(password, 10);
+       // const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             name,
             email,
@@ -13,10 +13,10 @@ const registerUser = async(req, res) => {
             address,
             pincode,
             role,
-            phoneNumber
+            phoneNumber,
         })
         await newUser.save();
-        res.status(201).json({message: "User registered"})
+        res.status(201) .json({message: "User registered"})
     } catch (error) {
         console.log(error)
     }

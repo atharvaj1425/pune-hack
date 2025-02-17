@@ -18,13 +18,13 @@ import Donation_page from './pages/DonationPage/Donation_page.jsx';
 import DonateSingleMeal from './pages/DonateSingleMeal/donate.jsx';
 import GetSingleMeal from './pages/GetSingleMealPage/getSingleMeal.jsx';
 import NgoCurrentDonationPage from './pages/NgoCurrentDonationPage/currentdonation.jsx'
-
+import Recipe_Bot from './pages/Recipe_Bot/Recipe_Bot.jsx';
 
 
 function App() {
   return (
     <Router>
-      <div>
+      
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/consumer/getSingleMeal" element={<GetSingleMeal />} />
@@ -43,8 +43,9 @@ function App() {
           <Route path="/volunteer-donation-history" element={<VolunteerHistoryPage/>} />
           <Route path="/delivery-status" element={<DeliveryStatusPage />} />
           <Route path="/current-donation" element={<NgoCurrentDonationPage />} />
+          <Route path="/recipe-bot" element={<Recipe_Bot />} />
         </Routes>
-      </div>
+     
     </Router>
   );
 }
