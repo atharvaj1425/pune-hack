@@ -4,6 +4,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaBoxOpen, FaCalendarAlt, FaSortNumericUp, FaCalendarTimes, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // Import AOS styles
 
 const FoodInventory = ({ closeModal, updateFoodItems }) => {
   const [foodItems, setFoodItems] = useState([]);
@@ -15,6 +17,9 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
   });
 
   const navigate = useNavigate();
+
+  // Initialize AOS animations
+  AOS.init();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -81,14 +86,14 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
       </div>
 
       {/* Title */}
-      <h2 className="text-3xl font-bold text-center text-gray-800 flex justify-center items-center">
+      <h2 className="text-3xl font-bold text-center text-gray-800 flex justify-center items-center" data-aos="flip-left">
         <FaBoxOpen className="mr-3 text-green-600" />
         Food Items Inventory
       </h2>
 
       {/* Input Form */}
       <div className="space-y-5">
-        <div>
+        <div data-aos="flip-left">
           <label className="block text-gray-700 font-medium mb-2 flex items-center">
             <FaBoxOpen className="mr-2 text-green-500" /> Name of Food Item:
           </label>
@@ -101,7 +106,7 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
-        <div>
+        <div data-aos="flip-left" data-aos-delay="100">
           <label className="block text-gray-700 font-medium mb-2 flex items-center">
             <FaCalendarAlt className="mr-2 text-green-500" /> Manufacturing Date:
           </label>
@@ -113,7 +118,7 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
-        <div>
+        <div data-aos="flip-left" data-aos-delay="200">
           <label className="block text-gray-700 font-medium mb-2 flex items-center">
             <FaSortNumericUp className="mr-2 text-green-500" /> Quantity:
           </label>
@@ -126,7 +131,7 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
-        <div>
+        <div data-aos="flip-left" data-aos-delay="300">
           <label className="block text-gray-700 font-medium mb-2 flex items-center">
             <FaCalendarTimes className="mr-2 text-green-500" /> Expiry Date:
           </label>
@@ -141,6 +146,7 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
         <button
           onClick={handleAddFoodItem}
           className="w-full p-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 flex justify-center items-center text-xl"
+          data-aos="flip-left" data-aos-delay="400"
         >
           Add Food Item <FaCheckCircle className="ml-2 text-white" />
         </button>

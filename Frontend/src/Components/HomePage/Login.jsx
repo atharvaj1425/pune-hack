@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { FaLock, FaPersonCircleCheck, FaArrowLeft, FaUserPlus } from "react-icons/fa6";
 import "react-toastify/dist/ReactToastify.css";
 import { hourglass } from 'ldrs';
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
+
 
 hourglass.register();
 
@@ -119,13 +123,17 @@ const Login = ({ closeModal }) => {
             }, 3000);
         }
     };
-
+    useEffect(() => {
+        AOS.init({ duration: 1000 });
+    }, []);
+    
     if (isLoading) {
+        
         return (
             <div className="fixed inset-0 flex items-center justify-center">
                 <l-hourglass 
                 flex items-center justify-center
-                    size="90"
+                    size="100"
                     bg-opacity="0.1"
                     speed="1.75" 
                     color="white"
@@ -133,9 +141,10 @@ const Login = ({ closeModal }) => {
             </div>
         );
     }
+   
 
     return (
-        <div className="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-xl relative">
+        <div className="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-xl relative " data-aos="flip-left">
             <div className="flex items-center justify-between mb-6">
                 <button
                     onClick={closeModal}
@@ -156,8 +165,9 @@ const Login = ({ closeModal }) => {
                 </h2>
             </div>
 
-            <div className="max-h-[60vh] overflow-y-auto pr-4">
-                <form className="space-y-4" onSubmit={isLogin ? loginHandler : registerHandler}>
+            <div className="max-h-[60vh] overflow-y-auto px-6 md:px-12">
+    <form className="space-y-4" onSubmit={isLogin ? loginHandler : registerHandler}>
+
                     {!isLogin && (
                         <>
                             <div>

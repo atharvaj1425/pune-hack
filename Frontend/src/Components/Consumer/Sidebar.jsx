@@ -175,8 +175,8 @@ const Sidebar = () => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Add Food Item"
-        className="modal"
-        overlayClassName="modal-overlay"
+        className="modal bg-white rounded-xl shadow-2xl w-11/12 sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto transform transition-all duration-300 ease-in-out animate-fade-in-up"
+        overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
       >
         <AddItem closeModal={closeModal} />
       </Modal>
@@ -186,8 +186,8 @@ const Sidebar = () => {
         isOpen={donateModalIsOpen}
         onRequestClose={closeDonateModal}
         contentLabel="Donate Single Meal"
-        className="modal"
-        overlayClassName="modal-overlay"
+         className="modal bg-white rounded-xl shadow-2xl w-11/12 sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto transform transition-all duration-300 ease-in-out animate-fade-in-up"
+        overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
       >
         <DonateSingleMeal closeModal={closeDonateModal} />
       </Modal>
