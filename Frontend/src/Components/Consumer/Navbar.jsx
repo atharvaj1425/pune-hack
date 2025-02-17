@@ -17,7 +17,7 @@ const NavBar = () => {
       <div className="flex items-center">
         {/* Restaurant Image beside Retailer Dashboard */}
         <img src="/consumer.png" alt="Restaurant" className="w-16 h-16 mr-2" />
-        <div className="text-4xl font-semibold">Consumer Dashboard</div>
+        <div className="text-4xl font-semibold">User Dashboard</div>
       </div>
 
       {/* Links in the center */}

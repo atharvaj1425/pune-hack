@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaUtensils, FaHashtag, FaCalendarAlt, FaConciergeBell ,FaTimes } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const DonateSingleMeal = ({ closeModal }) => {
     const [formData, setFormData] = useState({
@@ -10,7 +13,10 @@ const DonateSingleMeal = ({ closeModal }) => {
         quantity: '',
         schedulePickUp: ''
     });
-    const [meals, setMeals] = useState([]);
+
+    useEffect(() => {
+        AOS.init({ duration: 1000 });
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,17 +29,11 @@ const DonateSingleMeal = ({ closeModal }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/v1/users/addMeal', formData, {
-            credentials: true
-            });
-            setMeals((prevMeals) => [...prevMeals, response.data.data]);
-            setFormData({
-                mealDescription: '',
-                quantity: '',
-                schedulePickUp: ''
+            await axios.post('/api/v1/users/addMeal', formData, {
+                credentials: true
             });
             toast.success('Meal donated successfully!');
-            closeModal(); // Close the modal on successful submission
+            closeModal();
         } catch (error) {
             console.error('Error submitting form:', error);
             toast.error('Failed to donate meal. Please try again later.');
@@ -41,66 +41,93 @@ const DonateSingleMeal = ({ closeModal }) => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl space-y-6">
-            {/* Close Button */}
-            <div className="flex items-center justify-between mb-6">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div 
+                className="bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-lg max-h-[90vh] overflow-y-auto relative"
+                data-aos="flip-up"
+            >
+                {/* Close Button */}
                 <button
                     onClick={closeModal}
-                    className="p-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 focus:outline-none"
+                    className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition"
                 >
-                    <FaArrowLeft className="text-xl" />
+                   <FaTimes className="text-2xl" />
                 </button>
+
+                {/* Title with Bounce Animation */}
+                <div className="text-center space-y-2">
+                    <motion.div
+                        animate={{ y: [0, -10, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                    >
+                        <FaConciergeBell className="text-5xl text-green-600 mx-auto" />
+                    </motion.div>
+                    <h1 className="text-2xl font-bold">Donate a Meal</h1>
+                </div>
+
+                {/* Form */}
+                <div className="space-y-4 mt-4">
+                    {/* Meal Description */}
+                    <div>
+                        <label className="block font-semibold">Meal Description:</label>
+                        <div className="flex items-center border border-gray-300 rounded-md p-2">
+                            <FaUtensils className="text-gray-500 text-lg mr-2" />
+                            <input
+                                type="text"
+                                name="mealDescription"
+                                value={formData.mealDescription}
+                                onChange={handleChange}
+                                required
+                                className="w-full outline-none border-none bg-transparent"
+                                placeholder="Enter meal description"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Quantity */}
+                    <div>
+                        <label className="block font-semibold">Quantity:</label>
+                        <div className="flex items-center border border-gray-300 rounded-md p-2">
+                            <FaHashtag className="text-gray-500 text-lg mr-2" />
+                            <input
+                                type="number"
+                                name="quantity"
+                                value={formData.quantity}
+                                onChange={handleChange}
+                                required
+                                className="w-full outline-none border-none bg-transparent"
+                                placeholder="Enter quantity"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Schedule Pick Up */}
+                    <div>
+                        <label className="block font-semibold">Schedule Pick Up:</label>
+                        <div className="flex items-center border border-gray-300 rounded-md p-2">
+                            <FaCalendarAlt className="text-gray-500 text-lg mr-2" />
+                            <input
+                                type="datetime-local"
+                                name="schedulePickUp"
+                                value={formData.schedulePickUp}
+                                onChange={handleChange}
+                                required
+                                className="w-full outline-none border-none bg-transparent"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                        onClick={handleSubmit}
+                        className="w-full p-3 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 transition flex justify-center items-center"
+                    >
+                        Donate Meal <FaConciergeBell className="ml-2" />
+                    </button>
+                </div>
+
+                <ToastContainer />
             </div>
-
-            {/* Title */}
-            <h1 className="text-3xl font-bold text-center text-gray-800">Donate a Single Meal</h1>
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                    <label htmlFor="mealDescription" className="block text-gray-700 font-medium mb-2">Meal Description:</label>
-                    <input
-                        type="text"
-                        id="mealDescription"
-                        name="mealDescription"
-                        value={formData.mealDescription}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="quantity" className="block text-gray-700 font-medium mb-2">Quantity:</label>
-                    <input
-                        type="text"
-                        id="quantity"
-                        name="quantity"
-                        value={formData.quantity}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="schedulePickUp" className="block text-gray-700 font-medium mb-2">Schedule Pick Up:</label>
-                    <input
-                        type="datetime-local"
-                        id="schedulePickUp"
-                        name="schedulePickUp"
-                        value={formData.schedulePickUp}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="w-full p-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 flex justify-center items-center text-xl"
-                >
-                    Donate
-                </button>
-            </form>
-
-            {/* Toast Notifications */}
-            <ToastContainer />
         </div>
     );
 };

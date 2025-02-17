@@ -70,7 +70,7 @@ const Sidebar = () => {
           </li>
           <Link to="/donate">
             <li className="flex items-center hover:text-green-400 cursor-pointer transition duration-200 mt-7">
-              <IoFastFood className="mr-3 text-2xl" /> Food Donation History
+              <IoFastFood className="mr-3 text-2xl" /> Food Donation
             </li>
           </Link>
           <Link to="/delivery-status">
@@ -95,8 +95,9 @@ const Sidebar = () => {
         isOpen={formModalIsOpen}
         onRequestClose={closeFormModal}
         contentLabel="Add Food Items"
-        className="modal"
-        overlayClassName="modal-overlay"
+         className="modal bg-white rounded-xl shadow-2xl w-11/12 sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto transform transition-all duration-300 ease-in-out animate-fade-in-up"
+        overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
+       
       >
         <FoodInventory closeModal={closeFormModal} updateFoodItems={updateFoodItems} />
       </Modal>
@@ -106,8 +107,8 @@ const Sidebar = () => {
         isOpen={donateFormModalIsOpen}
         onRequestClose={closeDonateFormModal}
         contentLabel="Donate Food"
-        className="modal"
-        overlayClassName="modal-overlay"
+         className="modal bg-white rounded-xl shadow-2xl w-11/12 sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto transform transition-all duration-300 ease-in-out animate-fade-in-up"
+        overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
       >
         <Form closeModal={closeDonateFormModal} updateFoodItems={updateFoodItems} />
       </Modal>
