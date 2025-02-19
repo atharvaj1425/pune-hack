@@ -1,58 +1,74 @@
-import { Link } from "react-router-dom";
-import React, { useEffect,useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import { FaHotel } from "react-icons/fa";
-import { FaCircleUser } from "react-icons/fa6";
+import { FaSignOutAlt } from "react-icons/fa"; // Import logout icon
 
 const NavBar = () => {
   const [userEmail, setUserEmail] = useState("");
-  const [userName, setUserName] = useState("");
-    useEffect(() => {
-      // Retrieve email from localStorage when the component is mounted
-      const email = localStorage.getItem("userEmail");
+  const navigate = useNavigate(); // React Router navigation hook
+const [userName, setUserName] = useState("");
+  useEffect(() => {
+    // Retrieve email from localStorage when the component is mounted
+    const email = localStorage.getItem("userEmail");
       const username = localStorage.getItem("userName");
-      if (email) {
-        setUserEmail(email); 
-      }
+    if (email) {
+      setUserEmail(email); 
+    }
       if (username) {
         setUserName(username); 
       }
-    }, []);
+  }, []);
+
+  const handleLogout = () => {
+    // Clear access token and user email from localStorage
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("accessToken");
+
+    // Redirect to Homepage
+    navigate('/');
+  };
+
   return (
     <div className="flex bg-white p-4 rounded-lg border-2 border-black shadow-lg mt-15 w-full justify-between">
       <div className="flex items-center">
-        {/* Restaurant Image beside Retailer Dashboard */}
-        <img src="/building.png" alt="Restaurant" className="w-16 h-16 mr-2" />
+        {/* NGO Logo beside Dashboard Title */}
+        <img src="/building.png" alt="NGO" className="w-16 h-16 mr-2" />
         <div className="text-4xl font-semibold">NGO Dashboard</div>
       </div>
 
       {/* Links in the center */}
       <div className="flex items-center space-x-8">
-  <div className="text-lg font-bold text-green-800 pb-1 border-b-4 border-green-800">
-    Overview
-  </div>
-  <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
-    All Data
-  </div>
-  <Link to="/current-donation">
-  <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
-    Current Donation
-  </div>
-  </Link>
-  <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
-    Network
-  </div>
-</div>
+        <div className="text-lg font-bold text-green-800 pb-1 border-b-4 border-green-800">
+          Overview
+        </div>
+        <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
+          All Data
+        </div>
+        <Link to="/current-donation">
+          <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
+            Current Donation
+          </div>
+        </Link>
+        <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
+          Network
+        </div>
+      </div>
 
-
-      {/* User Icon with Username beside it on the right side */}
+      {/* User Icon with Username and Logout button */}
       <div className="flex items-center">
-      {/* Login Image beside APMC */}
-      <img src="/login.png" alt="Login" className="w-12 h-12 mr-2" />
-      <div className="text-lg font-bold">{userName ? userName : "Guest"}</div>
-    </div>
+        <img src="/login.png" alt="Login" className="w-12 h-12 mr-2" />
+        <div className="text-lg font-bold mr-4">{userName ? userName : "Guest"}</div>
+
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+        >
+          Logout <FaSignOutAlt className="ml-2" /> {/* Added space between icon and text */}
+        </button>
+      </div>
     </div>
   );
-}
+};
 
 export default NavBar;

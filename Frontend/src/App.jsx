@@ -1,23 +1,25 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css'
-import HomePage from './pages/Homepage/HomePage'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
+
+import HomePage from './pages/Homepage/HomePage';
 import ConsumerPage from './pages/ConsumerPage/ConsumerPage';
 import RetailerPage from './pages/RetailerPage/RetailerPage';
-import VolunteerPage from './pages/VolunteerPage/VolunteerPage.jsx'
+import VolunteerPage from './pages/VolunteerPage/VolunteerPage.jsx';
 import DeliveryStatusPage from './pages/DeliveryStatusPage.jsx/DeliveryStatusPage.jsx';
-import VolunteerCurrentPage from './pages/VolunteerPage/VolunteerCurrentDonation.jsx'
-import VolunteerHistoryPage from './pages/VolunteerPage/VolunteerDonationHistory.jsx'
+import VolunteerCurrentPage from './pages/VolunteerPage/VolunteerCurrentDonation.jsx';
+import VolunteerHistoryPage from './pages/VolunteerPage/VolunteerDonationHistory.jsx';
 import AddItem from './pages/userAddItem/AddItem';
 import DailyPrice from './pages/DailyPricePage/DailyPrice';
 import FoodDetection from './pages/FoodDetection/FoodDetection';
 import Recipe from './pages/Recipe/Recipe';
 import FoodDonation from './pages/FoodDonation/FoodDonation';
 import Ngo from './pages/NGO_Page/Ngo';
-import { ChakraProvider } from '@chakra-ui/react';
 import Donation_page from './pages/DonationPage/Donation_page.jsx';
 import DonateSingleMeal from './pages/DonateSingleMeal/donate.jsx';
 import GetSingleMeal from './pages/GetSingleMealPage/getSingleMeal.jsx';
-import NgoCurrentDonationPage from './pages/NgoCurrentDonationPage/currentdonation.jsx'
+import NgoCurrentDonationPage from './pages/NgoCurrentDonationPage/currentdonation.jsx';
 import Recipe_Bot from './pages/Recipe_Bot/Recipe_Bot.jsx';
 import SingleMealStatus from './Components/Consumer/SingleMealStatus.jsx';
 
