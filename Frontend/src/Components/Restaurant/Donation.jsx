@@ -5,7 +5,7 @@ import { FaArrowLeft, FaBox, FaCalendarAlt, FaCheckCircle, FaClipboardCheck, FaH
 import { useNavigate } from 'react-router-dom';
 
 import { MdOutlineDeliveryDining } from "react-icons/md";
-
+import { MdOutlineMobileFriendly } from "react-icons/md";
 const FoodDonationHistory = () => {
   const [donations, setDonations] = useState([]);
   const navigate = useNavigate();
@@ -41,12 +41,12 @@ const FoodDonationHistory = () => {
         return <FaHourglassHalf className="inline text-yellow-500 mr-2 text-xl" />;
       case 'accepted':
         return <FaCheckCircle className="inline text-blue-500 mr-2 text-xl" />;
-      case 'completed':
+      case 'delivered':
         return <FaClipboardCheck className="inline text-green-600 mr-2 text-xl" />;
       case 'rejected':
         return <FaTimesCircle className="inline text-red-500 mr-2 text-xl" />;
       default:
-        return <MdOutlineDeliveryDining className="inline text-green-600 mr-2 text-2xl" />;
+        return <MdOutlineDeliveryDining className="inline text-orange-600 mr-2 text-2xl" />;
     }
   };
 

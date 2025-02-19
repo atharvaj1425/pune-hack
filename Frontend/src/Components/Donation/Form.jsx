@@ -3,11 +3,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaQuoteLeft, FaQuoteRight, FaAppleAlt } from "react-icons/fa";
+import { FaArrowLeft, FaMicrophone, FaAppleAlt } from "react-icons/fa";
 import { MdRectangle } from "react-icons/md";
-import { motion } from "framer-motion"; // Import Framer Motion
+import { motion } from "framer-motion"; 
 import AOS from "aos";
-import "aos/dist/aos.css"; // Import AOS styles
+import "aos/dist/aos.css"; 
 
 const Form = ({ closeModal, updateFoodItems }) => {
   const navigate = useNavigate();
@@ -20,7 +20,6 @@ const Form = ({ closeModal, updateFoodItems }) => {
   });
 
   useEffect(() => {
-    // Initialize AOS animations
     AOS.init();
   }, []);
 
@@ -30,6 +29,24 @@ const Form = ({ closeModal, updateFoodItems }) => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  // Voice Recognition for Food Name Input
+  const handleVoiceInput = () => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const voiceText = event.results[0][0].transcript;
+      setFormData((prevData) => ({ ...prevData, foodName: voiceText }));
+      toast.success("Voice input recognized!");
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Voice recognition error:", event.error);
+      toast.error("Could not recognize speech. Try again.");
+    };
   };
 
   const formatDate = (date) => {
@@ -50,21 +67,15 @@ const Form = ({ closeModal, updateFoodItems }) => {
       schedulePickUp: formatDate(formData.schedulePickUp),
     };
 
-    console.log("Formatted Data:", formattedData);
-
     try {
       const response = await axios.post(
         "/api/v1/restaurants/donateFood",
         formattedData,
         { withCredentials: true }
       );
-     
 
       if (response.status === 200 || response.status === 201) {
-        toast.success("Donation submitted successfully!", {
-          position: "top-center",
-          autoClose: 3000,
-        });
+        toast.success("Donation submitted successfully!", { position: "top-center", autoClose: 3000 });
         console.log("Server Response:", response.data);
         setFormData({
           foodName: "",
@@ -73,33 +84,24 @@ const Form = ({ closeModal, updateFoodItems }) => {
           schedulePickUp: "",
           foodType: "",
         });
-        updateFoodItems(response.data); // Update the food items in the parent component
+        updateFoodItems(response.data);
         setTimeout(() => {
           closeModal();
-        }, 2000); // Wait 2 seconds before closing the modal
-         // Close the modal on successful submission
+        }, 2000);
       } else {
-        toast.error("Failed to submit donation. Please try again.", {
-          position: "top-center",
-          autoClose: 3000,
-        });
+        toast.error("Failed to submit donation. Please try again.", { position: "top-center", autoClose: 3000 });
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      if (error.response) {
-        console.error("Error Response Data:", error.response.data);
-      }
-      toast.error("An error occurred. Please try again later.", {
-        position: "top-center",
-        autoClose: 3000,
-      });
+      toast.error("An error occurred. Please try again later.", { position: "top-center", autoClose: 3000 });
     }
   };
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl mx-auto" data-aos="fade-up">
       <ToastContainer />
-      {/* Back Button with Animated Hover Effect */}
+      
+      {/* Back Button */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={closeModal}
@@ -109,17 +111,14 @@ const Form = ({ closeModal, updateFoodItems }) => {
         </button>
       </div>
 
-      {/* Title with Animation */}
+      {/* Title */}
       <div className="flex items-center justify-center mb-6" data-aos="flip-up" data-aos-delay="200">
-        <FaQuoteLeft className="text-3xl text-green-600" />
-        <h2 className="text-3xl font-bold text-gray-800 mx-3">Food Donation Form</h2>
-        <FaQuoteRight className="text-3xl text-green-600" />
+        <h2 className="text-3xl font-bold text-gray-800">Food Donation Form</h2>
       </div>
 
-      {/* Inspirational Quote Below Header */}
+      {/* Inspirational Quote */}
       <motion.div
         className="text-center text-lg font-semibold text-gray-600 mb-6"
-        data-aos="bounce-in"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
@@ -127,109 +126,93 @@ const Form = ({ closeModal, updateFoodItems }) => {
         <p>"One meal can make a difference. Together, we make hunger history!"</p>
       </motion.div>
 
-      {/* Form Fields with Animations */}
+      {/* Form Fields */}
       <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit}>
         <div data-aos="flip-up">
-          <div className="flex items-center mb-2">
-            <FaAppleAlt className="text-green-500 mr-2" />
-            <label className="font-semibold">Food Name</label>
-          </div>
+          <label className="font-semibold flex items-center">
+            <FaAppleAlt className="text-green-500 mr-2" /> Food Name
+          </label>
           <div className="flex items-center border p-3 rounded-lg">
             <input
               type="text"
               name="foodName"
               value={formData.foodName}
               onChange={handleChange}
-              placeholder="Food Name"
+              placeholder="Enter food name"
               className="w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition"
               required
             />
+            <button onClick={handleVoiceInput} className="ml-2 text-green-600 hover:text-green-700">
+              <FaMicrophone className="text-xl" />
+            </button>
           </div>
         </div>
 
         <div data-aos="flip-up" data-aos-delay="100">
-          <div className="flex items-center mb-2">
-            <MdRectangle className="text-green-500 mr-2" />
-            <label className="font-semibold">Quantity</label>
-          </div>
-          <div className="flex items-center border p-3 rounded-lg">
-            <input
-              type="text"
-              name="quantity"
-              value={formData.quantity}
-              onChange={handleChange}
-              placeholder="e.g., 10 kg"
-              className="w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-              required
-            />
-          </div>
+          <label className="font-semibold flex items-center">
+            <MdRectangle className="text-green-500 mr-2" /> Quantity
+          </label>
+          <input
+            type="text"
+            name="quantity"
+            value={formData.quantity}
+            onChange={handleChange}
+            placeholder="e.g., 10 kg"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            required
+          />
         </div>
 
         <div data-aos="flip-up" data-aos-delay="200">
-          <div className="flex items-center mb-2">
-            <FaQuoteLeft className="text-green-500 mr-2" />
-            <label className="font-semibold">Expiry Date</label>
-          </div>
-          <div className="flex items-center border p-3 rounded-lg">
-            <input
-              type="date"
-              name="expiryDate"
-              value={formData.expiryDate}
-              onChange={handleChange}
-              className="w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-              required
-            />
-          </div>
+          <label className="font-semibold flex items-center">Expiry Date</label>
+          <input
+            type="date"
+            name="expiryDate"
+            value={formData.expiryDate}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            required
+          />
         </div>
 
         <div data-aos="flip-up" data-aos-delay="300">
-          <div className="flex items-center mb-2">
-            <FaQuoteLeft className="text-green-500 mr-2" />
-            <label className="font-semibold">Schedule Pick-Up</label>
-          </div>
-          <div className="flex items-center border p-3 rounded-lg">
-            <input
-              type="date"
-              name="schedulePickUp"
-              value={formData.schedulePickUp}
-              onChange={handleChange}
-              className="w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-              required
-            />
-          </div>
+          <label className="font-semibold flex items-center">Schedule Pick-Up</label>
+          <input
+            type="date"
+            name="schedulePickUp"
+            value={formData.schedulePickUp}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            required
+          />
         </div>
 
         <div data-aos="flip-up" data-aos-delay="400">
-          <div className="flex items-center mb-2">
-            <MdRectangle className="text-green-500 mr-2" />
-            <label className="font-semibold">Food Type</label>
-          </div>
-          <div className="flex items-center border p-3 rounded-lg">
-            <input
-              type="text"
-              name="foodType"
-              value={formData.foodType}
-              onChange={handleChange}
-              placeholder="e.g., Fruits, Grains"
-              className="w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-              required
-            />
-          </div>
+          <label className="font-semibold flex items-center">Food Type</label>
+          <input
+            type="text"
+            name="foodType"
+            value={formData.foodType}
+            onChange={handleChange}
+            placeholder="e.g., Fruits, Grains"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            required
+          />
         </div>
       </form>
 
-      {/* Action Buttons with Animated Hover Effect */}
+      {/* Buttons */}
       <div className="flex justify-center gap-4 mt-6">
         <button
           type="submit"
           onClick={handleSubmit}
-          className="bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-white hover:text-green-900 border-2 border-green-600 transition-transform transform hover:scale-110"
+          className="bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-110"
         >
-          Donate <MdRectangle className="inline-block ml-2" />
+          Donate
         </button>
         <button
           onClick={closeModal}
-          className="bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-white hover:text-blue-900 border-2 border-blue-600 transition-transform transform hover:scale-110"
+          className="bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-110"
         >
           Close
         </button>

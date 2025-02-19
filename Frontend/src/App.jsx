@@ -22,6 +22,7 @@ import GetSingleMeal from './pages/GetSingleMealPage/getSingleMeal.jsx';
 import NgoCurrentDonationPage from './pages/NgoCurrentDonationPage/currentdonation.jsx';
 import Recipe_Bot from './pages/Recipe_Bot/Recipe_Bot.jsx';
 import SingleMealStatus from './Components/Consumer/SingleMealStatus.jsx';
+//import Google_Translate from './Components/Google_Translate.jsx';
 
 function App() {
   return (
