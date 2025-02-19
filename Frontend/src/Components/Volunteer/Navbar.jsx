@@ -1,18 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { FaHotel } from "react-icons/fa";
-import { FaCircleUser } from "react-icons/fa6";
+import { FaSignOutAlt } from "react-icons/fa"; // Import logout icon
 
 const Navbar = () => {
   const [userName, setUserName] = useState("");
+  const navigate = useNavigate(); // React Router navigation hook
 
   useEffect(() => {
-      // Retrieve email from localStorage when the component is mounted
-      const name = localStorage.getItem("userName");
-      if (name) {
-        setUserName(name); 
-      }
-    }, []);
+    // Retrieve name from localStorage when the component is mounted
+    const name = localStorage.getItem("userName");
+    if (name) {
+      setUserName(name); 
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // Clear user data from localStorage
+    localStorage.removeItem("userName");
+    localStorage.removeItem("accessToken");
+
+    // Redirect to homepage or login page
+    navigate('/');
+  };
 
   return (
     <div className="flex bg-white p-4 rounded-lg border-2 border-black shadow-lg mt-15 w-full justify-between">
@@ -38,11 +48,18 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* User Icon with Username beside it on the right side */}
+      {/* User Icon with Username and Logout button */}
       <div className="flex items-center">
         <img src="/login.png" alt="Login" className="w-12 h-12 mr-2" />
-        <div className="text-lg font-bold">{userName ? userName : "Guest"}</div>
-        
+        <div className="text-lg font-bold mr-4">{userName ? userName : "Guest"}</div>
+
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+        >
+          Logout <FaSignOutAlt className="ml-2" /> {/* Added space with ml-4 */}
+        </button>
       </div>
     </div>
   );

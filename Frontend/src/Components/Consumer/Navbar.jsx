@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaHotel } from "react-icons/fa";
-import { FaCircleUser } from "react-icons/fa6";
+import { FaSignOutAlt } from "react-icons/fa"; // Logout icon
+import { useNavigate } from 'react-router-dom'; // React Router hook for navigation
 import DeliveredDonations from './DeliveredDonations';
 import ActiveDonation from './ActiveDonation';
 import DonationHistory from './DonationHistory';
@@ -8,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 const NavBar = () => {
   const [userEmail, setUserEmail] = useState("");
+  const navigate = useNavigate(); // React Router hook for navigation
   const [userName, setUserName] = useState("");
   const [showDeliveredDonations, setShowDeliveredDonations] = useState(false);
   const [showActiveDonation, setShowActiveDonation] = useState(false);
@@ -19,12 +21,23 @@ const NavBar = () => {
     const username = localStorage.getItem("userName");
   
     if (email) {
-      setUserEmail(email); 
+      setUserEmail(email);
     }
     if (username) {
       setUserName(username); 
     }
   }, []);
+
+  const handleLogout = () => {
+    // Clear access token and user email from localStorage and sessionStorage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userEmail");
+    sessionStorage.removeItem("accessToken"); // Clear sessionStorage as well
+
+    // Redirect to Homepage and replace the current history entry so they can't go back
+    navigate('/', { replace: true });
+  };
+
 
   const handleShowDeliveredDonations = () => {
     setShowDeliveredDonations(true);
@@ -79,16 +92,24 @@ const NavBar = () => {
 
       {/* User Icon with Username beside it on the right side */}
       <div className="flex items-center">
-        {/* Login Image beside APMC */}
-        <img src="/login.png" alt="Login" className="w-12 h-12 mr-2" />
-        <div className="text-lg font-bold">{userName ? userName : "Guest"}</div>
-      </div>
+          {/* Login Image beside APMC */}
+          <img src="/login.png" alt="Login" className="w-12 h-12 mr-2" />
+          <div className="text-lg font-bold mr-4">{userName ? userName : "Guest"}</div>
+
+        {/* Logout Button with React Icon */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+        >
+             Logout <FaSignOutAlt className="ml-2" />
+        </button>
+        </div>
 
       {showDeliveredDonations && <DeliveredDonations onClose={handleCloseDeliveredDonations} />}
       {showActiveDonation && <ActiveDonation onClose={handleCloseActiveDonation} />}
       {showDonationHistory && <DonationHistory onClose={handleCloseDonationHistory} />}
     </div>
   );
-}
+};
 
 export default NavBar;

@@ -32,8 +32,12 @@ const DonateSingleMeal = ({ closeModal }) => {
             await axios.post('/api/v1/users/addMeal', formData, {
                 credentials: true
             });
-            toast.success('Meal donated successfully!');
-            closeModal();
+            toast.success('Food item added successfully!');
+
+    // Delay modal close slightly (optional)
+    setTimeout(() => {
+      closeModal();
+    }, 1000);
         } catch (error) {
             console.error('Error submitting form:', error);
             toast.error('Failed to donate meal. Please try again later.');

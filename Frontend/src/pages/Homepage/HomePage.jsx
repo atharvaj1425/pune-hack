@@ -50,6 +50,8 @@ const HomePage = () => {
   return (
     <div className="bg-green-100 min-h-screen flex flex-col relative w-full">
 
+
+
       {/* Header Section */}
       <header className="flex justify-between items-center px-3 py-2 sm:px-4 md:px-6 lg:px-8 w-full " data-aos="fade-up" data-aos-duration="1000">
         <div className="flex items-center">

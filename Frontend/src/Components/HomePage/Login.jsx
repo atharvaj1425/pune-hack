@@ -65,14 +65,14 @@ const Login = ({ closeModal }) => {
                         navigate("/volunteer");
                     }
                     closeModal();
-                }, 3000);
+                }, 1000);
             }
         } catch (error) {
             toast.error("Invalid Credentials");
         } finally {
             setTimeout(() => {
                 setIsLoading(false);
-            }, 3000);
+            }, 1000);
         }
     };
 
@@ -120,7 +120,7 @@ const Login = ({ closeModal }) => {
         } finally {
             setTimeout(() => {
                 setIsLoading(false);
-            }, 3000);
+            }, 1000);
         }
     };
     useEffect(() => {
@@ -144,7 +144,7 @@ const Login = ({ closeModal }) => {
    
 
     return (
-        <div className="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-xl relative " data-aos="flip-left">
+        <div className="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-xl relative " data-aos="fade-left">
             <div className="flex items-center justify-between mb-6">
                 <button
                     onClick={closeModal}
@@ -156,9 +156,9 @@ const Login = ({ closeModal }) => {
 
             <div className="flex flex-col items-center">
                 {isLogin ? (
-                    <FaPersonCircleCheck className="text-4xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
+                    <FaPersonCircleCheck className="text-5xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
                 ) : (
-                    <FaUserPlus className="text-4xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
+                    <FaUserPlus className="text-5xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
                 )}
                 <h2 className="text-4xl font-semibold mb-4 text-green-800">
                     {isLogin ? "Login" : "Register"}
