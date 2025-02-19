@@ -58,6 +58,7 @@ const Form = ({ closeModal, updateFoodItems }) => {
         formattedData,
         { withCredentials: true }
       );
+     
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Donation submitted successfully!", {
@@ -73,7 +74,10 @@ const Form = ({ closeModal, updateFoodItems }) => {
           foodType: "",
         });
         updateFoodItems(response.data); // Update the food items in the parent component
-        closeModal(); // Close the modal on successful submission
+        setTimeout(() => {
+          closeModal();
+        }, 2000); // Wait 2 seconds before closing the modal
+         // Close the modal on successful submission
       } else {
         toast.error("Failed to submit donation. Please try again.", {
           position: "top-center",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaBoxOpen, FaCalendarAlt, FaSortNumericUp, FaCalendarTimes, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
@@ -19,8 +19,9 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
   const navigate = useNavigate();
 
   // Initialize AOS animations
-  AOS.init();
-
+  useEffect(() => {
+    AOS.init();
+  }, []);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -28,7 +29,8 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
       [name]: value,
     }));
   };
-
+  
+  
   const handleAddFoodItem = async () => {
     const { name, manufacturingDate, quantity, expiryDate } = formData;
 
@@ -39,7 +41,13 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
 
     try {
       console.log("Sending data to backend:", formData);
+      
+    
       const response = await axios.post("/api/v1/restaurants/addFoodItem", formData);
+     if(response.status === 200 || response.status === 201){
+      toast.success('Food item added successfully!');
+     }
+    
       console.log("Response from backend:", response.data);
 
       const newFoodItem = {
@@ -56,11 +64,13 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
 
       localStorage.setItem("foodItems", JSON.stringify(updatedFoodItems));
       setFoodItems(updatedFoodItems);
-
+     
       setFormData({ name: '', manufacturingDate: '', quantity: '', expiryDate: '' });
-      toast.success('Food item added successfully!');
+     
       updateFoodItems(newFoodItem); // Update the food items in the parent component
-      closeModal(); // Close the modal on successful submission
+      setTimeout(() => {
+        closeModal();
+      }, 1000); // Close the modal on successful submission
     } catch (error) {
       console.error("Error adding food item:", error);
 

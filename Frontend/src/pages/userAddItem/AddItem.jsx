@@ -41,8 +41,13 @@ const FoodInventory = ({ closeModal }) => {
 
     try {
       await axios.post("/api/v1/users/addFoodItem", formData);
+     
       toast.success('Food item added successfully!');
+
+    // Delay modal close slightly (optional)
+    setTimeout(() => {
       closeModal();
+    }, 1000);
     } catch (error) {
       toast.error('Failed to add food item. Please try again later.');
     }
