@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import Login from '../../Components/Homepage/Login';
 import AOS from "aos";
 import "aos/dist/aos.css";
-
+import Google_Translate from '../../Components/Google_Translate';
 
 // Set the app element for react-modal
 Modal.setAppElement('#root');

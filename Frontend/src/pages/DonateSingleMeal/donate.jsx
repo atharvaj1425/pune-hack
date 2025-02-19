@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FaArrowLeft, FaUtensils, FaHashtag, FaCalendarAlt, FaConciergeBell ,FaTimes } from 'react-icons/fa';
+import { FaArrowLeft, FaUtensils, FaHashtag, FaCalendarAlt, FaConciergeBell, FaTimes, FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -13,6 +13,7 @@ const DonateSingleMeal = ({ closeModal }) => {
         quantity: '',
         schedulePickUp: ''
     });
+    const [isListening, setIsListening] = useState(false);
 
     useEffect(() => {
         AOS.init({ duration: 1000 });
@@ -26,6 +27,32 @@ const DonateSingleMeal = ({ closeModal }) => {
         }));
     };
 
+    const startListening = () => {
+        if (!('webkitSpeechRecognition' in window)) {
+            toast.error("Speech recognition not supported in this browser.");
+            return;
+        }
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => setIsListening(true);
+        recognition.onend = () => setIsListening(false);
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setFormData((prevData) => ({ ...prevData, mealDescription: transcript }));
+        };
+
+        recognition.onerror = () => {
+            toast.error("Speech recognition failed. Please try again.");
+            setIsListening(false);
+        };
+
+        recognition.start();
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -33,11 +60,10 @@ const DonateSingleMeal = ({ closeModal }) => {
                 credentials: true
             });
             toast.success('Food item added successfully!');
-
-    // Delay modal close slightly (optional)
-    setTimeout(() => {
-      closeModal();
-    }, 1000);
+    
+            setTimeout(() => {
+                closeModal();
+            }, 1000);
         } catch (error) {
             console.error('Error submitting form:', error);
             toast.error('Failed to donate meal. Please try again later.');
@@ -71,7 +97,7 @@ const DonateSingleMeal = ({ closeModal }) => {
 
                 {/* Form */}
                 <div className="space-y-4 mt-4">
-                    {/* Meal Description */}
+                    {/* Meal Description with Voice Input */}
                     <div>
                         <label className="block font-semibold">Meal Description:</label>
                         <div className="flex items-center border border-gray-300 rounded-md p-2">
@@ -85,6 +111,9 @@ const DonateSingleMeal = ({ closeModal }) => {
                                 className="w-full outline-none border-none bg-transparent"
                                 placeholder="Enter meal description"
                             />
+                            <button onClick={startListening} className="ml-2 text-gray-600 hover:text-green-600">
+                                {isListening ? <FaMicrophoneSlash className="text-red-500" /> : <FaMicrophone className="text-green-600" />}
+                            </button>
                         </div>
                     </div>
 

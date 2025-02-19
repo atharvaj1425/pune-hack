@@ -360,7 +360,7 @@ const getActiveMeals = asyncHandler(async (req, res) => {
     // Fetch the active meals for the user
     const activeMeals = await SingleMeal.find({
         acceptedById: userId,
-        status: "Accepted",
+        status: { $in: ["Accepted", "Out for Delivery"] },
     }).populate("donor", "name");
 
     return res.status(200).json(new ApiResponse(200, activeMeals, "Active meals fetched successfully"));
