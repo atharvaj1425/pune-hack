@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { FaHotel } from "react-icons/fa";
 import { FaSignOutAlt } from "react-icons/fa"; // Logout icon
 import { useNavigate } from 'react-router-dom'; // React Router hook for navigation
-import DeliveredDonations from './DeliveredDonations';
+
 import ActiveDonation from './ActiveDonation';
 import DonationHistory from './DonationHistory';
 import { Link } from 'react-router-dom';
+import LeaderboardModal from './LeaderboardModal';
 
 const NavBar = () => {
   const [userEmail, setUserEmail] = useState("");
@@ -14,7 +15,7 @@ const NavBar = () => {
   const [showDeliveredDonations, setShowDeliveredDonations] = useState(false);
   const [showActiveDonation, setShowActiveDonation] = useState(false);
   const [showDonationHistory, setShowDonationHistory] = useState(false);
-
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   useEffect(() => {
     // Retrieve email from localStorage when the component is mounted
     const email = localStorage.getItem("userEmail");
@@ -88,7 +89,12 @@ const NavBar = () => {
         {/* <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800 cursor-pointer" onClick={handleShowDeliveredDonations}>
           Delivered Donations
         </div> */}
+        <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800" 
+            onClick={() => setShowLeaderboard(true)}>
+            Leaderboard
+        </div>
       </div>
+      
 
       {/* User Icon with Username beside it on the right side */}
       <div className="flex items-center">
@@ -105,6 +111,7 @@ const NavBar = () => {
         </button>
         </div>
 
+      {showLeaderboard && <LeaderboardModal onClose={() => setShowLeaderboard(false)} />}
       {showDeliveredDonations && <DeliveredDonations onClose={handleCloseDeliveredDonations} />}
       {showActiveDonation && <ActiveDonation onClose={handleCloseActiveDonation} />}
       {showDonationHistory && <DonationHistory onClose={handleCloseDonationHistory} />}

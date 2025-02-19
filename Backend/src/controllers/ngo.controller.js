@@ -125,6 +125,7 @@ const acceptFoodDonation = asyncHandler(async (req, res) => {
     // Assign the volunteer and update status
     foodDonation.status = "Accepted";
     foodDonation.acceptedById = ngoId;
+    foodDonation.acceptedBy = ngo.name;
     await foodDonation.save();
 
     return res.status(200).json(new ApiResponse(200, foodDonation, "Food donation accepted successfully"));
