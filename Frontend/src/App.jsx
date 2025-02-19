@@ -19,7 +19,7 @@ import DonateSingleMeal from './pages/DonateSingleMeal/donate.jsx';
 import GetSingleMeal from './pages/GetSingleMealPage/getSingleMeal.jsx';
 import NgoCurrentDonationPage from './pages/NgoCurrentDonationPage/currentdonation.jsx'
 import Recipe_Bot from './pages/Recipe_Bot/Recipe_Bot.jsx';
-
+import SingleMealStatus from './Components/Consumer/SingleMealStatus.jsx';
 
 function App() {
   return (
@@ -44,6 +44,7 @@ function App() {
           <Route path="/delivery-status" element={<DeliveryStatusPage />} />
           <Route path="/current-donation" element={<NgoCurrentDonationPage />} />
           <Route path="/recipe-bot" element={<Recipe_Bot />} />
+          <Route path="/single-meal-status" element={<SingleMealStatus/>} />
         </Routes>
      
     </Router>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SingleMealStatus = () => {
   const [meals, setMeals] = useState([]);
@@ -31,11 +33,38 @@ const SingleMealStatus = () => {
         status: newStatus,
       });
       setMeals(meals.map(meal => meal._id === mealId ? { ...meal, status: newStatus } : meal));
+      toast.success(`Meal status updated to ${newStatus} successfully!`);
     } catch (error) {
       console.error('Error updating status:', error);
-      alert('Failed to update status');
+      toast.error('Failed to update status. Please try again later.');
     }
     setUpdating(false);
+  };
+
+  const handleAccept = async (mealId) => {
+    try {
+      const response = await axios.post(`/api/v1/users/meals/${mealId}/accept`, {}, {
+        withCredentials: true,
+      });
+      toast.success("Meal accepted successfully!");
+      setMeals(meals.map(meal => meal._id === mealId ? { ...meal, status: "Accepted" } : meal));
+    } catch (err) {
+      console.error("Failed to accept meal:", err);
+      toast.error("Failed to accept meal. Please try again later.");
+    }
+  };
+
+  const handleReject = async (mealId) => {
+    try {
+      const response = await axios.post(`/api/v1/users/meals/${mealId}/reject`, {}, {
+        withCredentials: true,
+      });
+      toast.success("Meal rejected successfully!");
+      setMeals(meals.filter(meal => meal._id !== mealId));
+    } catch (err) {
+      console.error("Failed to reject meal:", err);
+      toast.error("Failed to reject meal. Please try again later.");
+    }
   };
 
   const getRoute = (meal) => {
@@ -90,6 +119,24 @@ const SingleMealStatus = () => {
                   <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => getRoute(meal)}>
                     Get Route
                   </button>
+                  {meal.status === "Pending" && (
+                    <>
+                      <button
+                        className="bg-green-500 text-white px-3 py-1 ml-2 rounded"
+                        onClick={() => handleAccept(meal._id)}
+                        disabled={updating}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="bg-red-500 text-white px-3 py-1 ml-2 rounded"
+                        onClick={() => handleReject(meal._id)}
+                        disabled={updating}
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
                   {meal.status === "Accepted" && (
                     <button
                       className="bg-yellow-500 text-white px-3 py-1 ml-2 rounded"
@@ -116,6 +163,7 @@ const SingleMealStatus = () => {
       ) : (
         <div>No meals available.</div>
       )}
+      <ToastContainer />
     </div>
   );
 };

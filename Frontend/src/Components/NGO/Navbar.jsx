@@ -6,12 +6,16 @@ import { FaCircleUser } from "react-icons/fa6";
 
 const NavBar = () => {
   const [userEmail, setUserEmail] = useState("");
-  
+  const [userName, setUserName] = useState("");
     useEffect(() => {
       // Retrieve email from localStorage when the component is mounted
       const email = localStorage.getItem("userEmail");
+      const username = localStorage.getItem("userName");
       if (email) {
         setUserEmail(email); 
+      }
+      if (username) {
+        setUserName(username); 
       }
     }, []);
   return (
@@ -45,7 +49,7 @@ const NavBar = () => {
       <div className="flex items-center">
       {/* Login Image beside APMC */}
       <img src="/login.png" alt="Login" className="w-12 h-12 mr-2" />
-      <div className="text-lg font-bold">{userEmail ? userEmail : "Guest"}</div>
+      <div className="text-lg font-bold">{userName ? userName : "Guest"}</div>
     </div>
     </div>
   );
