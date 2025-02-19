@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals } from "../controllers/user.controller.js";
+import { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals } from "../controllers/user.controller.js";
 import { verifyUserJWT } from "../middlewares/auth.middleware.js";
 import { authorizeRoles } from "../middlewares/role.middleware.js";
 
@@ -16,4 +16,14 @@ router.route("/addFoodItem").post(verifyUserJWT,authorizeRoles("individual"),  a
 router.route("/addMeal").post(verifyUserJWT, authorizeRoles("individual"), addSingleMeal)
 
 router.route("/getMeal").get(verifyUserJWT, authorizeRoles("individual"), getSingleMeals)
+
+router.post("/meals/:mealId/accept", verifyUserJWT, authorizeRoles("individual"), acceptSingleMeal);
+router.post("/meals/:mealId/reject", verifyUserJWT, authorizeRoles("individual"), rejectSingleMeal);
+
+router.route("/donation-history").get(verifyUserJWT, authorizeRoles("individual"), getDonationHistory);
+router.route("/active-donation").get(verifyUserJWT, authorizeRoles("individual"), getActiveDonation);
+router.put('/update-status/:donationId',verifyUserJWT, authorizeRoles("individual"), updateDonationStatus);
+
+router.route("/active-meals").get(verifyUserJWT, authorizeRoles("individual"), getActiveMeals);
+
 export default router;

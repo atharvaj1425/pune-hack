@@ -156,9 +156,9 @@ const Login = ({ closeModal }) => {
 
             <div className="flex flex-col items-center">
                 {isLogin ? (
-                    <FaPersonCircleCheck className="text-6xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
+                    <FaPersonCircleCheck className="text-4xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
                 ) : (
-                    <FaUserPlus className="text-6xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
+                    <FaUserPlus className="text-4xl mb-4 text-green-600 animate-bounce hover:scale-110 transition-transform duration-300" />
                 )}
                 <h2 className="text-4xl font-semibold mb-4 text-green-800">
                     {isLogin ? "Login" : "Register"}

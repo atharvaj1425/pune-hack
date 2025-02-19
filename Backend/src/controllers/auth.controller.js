@@ -16,7 +16,7 @@ const registerUser = async(req, res) => {
             phoneNumber,
         })
         await newUser.save();
-        res.status(201) .json({message: "User registered"})
+        res.status(201).json({message: "User registered"})
     } catch (error) {
         console.log(error)
     }

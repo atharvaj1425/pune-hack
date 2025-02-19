@@ -16,9 +16,21 @@ const singleMealSchema = new mongoose.Schema({
     donor: {
         type: Schema.Types.ObjectId,
         ref: "User",
+        required: true,
     },
     pincode:{
         type: String,
+    },
+    acceptedById: {
+        type: String
+    },
+    acceptedBy: {
+        type: String 
+    },
+    status: { 
+        type: String, 
+        enum: ["Pending", "Accepted", "Out for Delivery", "Delivered", "Expired"], 
+        default: "Pending" 
     }
 }, { timestamps: true});
 

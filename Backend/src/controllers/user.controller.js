@@ -202,15 +202,170 @@ const getSingleMeals = asyncHandler(async (req, res) => {
     // const maxincodeRange = userPincode - 2
     // Find meals uploaded by users within the pincode range
     const singleMeals = await SingleMeal.find({
-        user: { $ne: userId }, // Exclude meals uploaded by the user
+        donor: { $ne: userId}, // Exclude meals uploaded by the user
         // quantity: { $gte: 5 },
-                
+         status: "Pending",   
         // pincode: { $gte: minpincodeRange, $lte: maxincodeRange }
-    });
-    
+    }).populate('donor', 'name'); // Populate the donor field with the name
+    console.log(singleMeals)
 
     return res.status(200).json(new ApiResponse(200, singleMeals, "Single meals fetched successfully"));
 });
 
-export { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals };
+const acceptSingleMeal = asyncHandler(async (req, res) => {
+    const { mealId } = req.params;
+    const userId = req.user._id;
+
+    const meal = await SingleMeal.findById(mealId);
+    if (!meal) {
+        return res.status(404).json(new ApiResponse(404, null, "Meal not found"));
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+        return res.status(404).json(new ApiResponse(404, null, "User not found"));
+    }
+
+    meal.status = "Accepted";
+    meal.acceptedById = userId;
+    meal.acceptedBy = user.name; // Set the acceptedBy field with the user's name
+    await meal.save();
+
+    return res.status(200).json(new ApiResponse(200, meal, "Meal accepted successfully"));
+});
+
+// const rejectSingleMeal = asyncHandler(async (req, res) => {
+//     const { mealId } = req.params;
+
+//     const meal = await SingleMeal.findById(mealId);
+//     if (!meal) {
+//         return res.status(404).json(new ApiResponse(404, null, "Meal not found"));
+//     }
+
+//     meal.status = "Rejected";
+//     await meal.save();
+
+//     return res.status(200).json(new ApiResponse(200, meal, "Meal rejected successfully"));
+// });
+const rejectSingleMeal = asyncHandler(async (req, res) => {
+    const { mealId } = req.params; // Donation ID from URL
+    // Find the food donation to ensure it exists
+    const meal = await SingleMeal.findById(mealId);
+
+    if (!meal) {
+        return res.status(404).json(new ApiResponse(404, null, "Meal not found"));
+    }
+
+    // Do not update the status; just confirm the donation exists
+    return res.status(200).json(
+        new ApiResponse(200, null, "Food donation removed from your view")
+    );
+});
+
+const getDonationHistory = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const { status } = req.query;
+
+    if (!userId) {
+        throw new ApiError(400, "User ID is required");
+    }
+
+    // Check if the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    // Fetch all donations created by the user with the specified status
+    const query = { donor: userId };
+    if (status) {
+        query.status = status;
+    }
+
+    const donationHistory = await SingleMeal.find(query)
+        .populate("donor", "name")
+        .sort({ createdAt: -1 });
+
+    return res.status(200).json(new ApiResponse(200, donationHistory, "Donation history fetched successfully"));
+});
+
+const getActiveDonation = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    if (!userId) {
+        throw new ApiError(400, "User ID is required");
+    }
+
+    // Check if the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    // Fetch the active donation for the user
+    const activeDonation = await SingleMeal.findOne({
+        donor: userId,
+        status: { $in: ["Accepted", "Out for Delivery"] },
+    }).populate("donor", "name").populate("acceptedBy", "name");
+
+    if (!activeDonation) {
+        throw new ApiError(404, "No active donation found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, activeDonation, "Active donation fetched successfully"));
+});
+
+const updateDonationStatus = asyncHandler(async (req, res) => {
+    const { donationId } = req.params; // Get the donation ID from the URL parameters
+    const { status } = req.body; // Get the new status from the request body
+
+    try {
+        // Find the donation by its ID
+        const donation = await SingleMeal.findById(donationId);
+
+        if (!donation) {
+            return res.status(404).json({ message: 'Donation not found' });
+        }
+
+        // Update the donation's status
+        donation.status = status;
+
+        // Save the updated donation to the database
+        await donation.save();
+
+        // Return the updated donation
+        res.status(200).json({
+            message: 'Donation status updated successfully',
+            data: donation,
+        });
+    } catch (error) {
+        console.error('Error updating donation status:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+const getActiveMeals = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    if (!userId) {
+        throw new ApiError(400, "User ID is required");
+    }
+
+    // Check if the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    // Fetch the active meals for the user
+    const activeMeals = await SingleMeal.find({
+        acceptedById: userId,
+        status: "Accepted",
+    }).populate("donor", "name");
+
+    return res.status(200).json(new ApiResponse(200, activeMeals, "Active meals fetched successfully"));
+});
+
+export { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals };
+
 
