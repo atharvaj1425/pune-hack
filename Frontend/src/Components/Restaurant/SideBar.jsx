@@ -33,19 +33,6 @@ const Sidebar = () => {
     setDonateFormModalIsOpen(false);
   };
 
-  const fetchFoodItems = async () => {
-    try {
-      const response = await axios.get('/api/v1/restaurants/foodItems');
-      setFoodItems(response.data);
-    } catch (error) {
-      console.error('Error fetching food items:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchFoodItems();
-  }, []);
-
   const updateFoodItems = (newItem) => {
     setFoodItems((prevItems) => [...prevItems, newItem]);
   };

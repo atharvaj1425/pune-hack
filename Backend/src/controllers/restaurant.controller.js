@@ -285,4 +285,78 @@ const checkDeliveryStatus = asyncHandler(async (req, res) => {
     }
 });
 
-export {  addFoodItem, getFoodItems, donateFoodItem, foodDonationHistory, checkDeliveryStatus }
+const getRestaurantLeaderboard = asyncHandler(async (req, res) => {
+    const restaurantId = req.user._id;
+
+    // Get top 5 restaurant donors
+    const topDonors = await FoodDonation.aggregate([
+        {
+            $match: {
+                status: { $in: ["Delivered", "Accepted", "Out for Delivery"] }
+            }
+        },
+        {
+            $group: {
+                _id: "$restaurantUser",
+                restaurantName: { $first: "$restaurantName" },
+                totalQuantity: {
+                    $sum: {
+                        $toInt: {
+                            $replaceAll: {
+                                input: "$quantity",
+                                find: " ",
+                                replacement: ""
+                            }
+                        }
+                    }
+                },
+                donationsCount: { $sum: 1 }
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "_id",
+                foreignField: "_id",
+                as: "restaurantDetails"
+            }
+        },
+        { $unwind: "$restaurantDetails" },
+        {
+            $match: {
+                "restaurantDetails.role": "restaurant"
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                name: "$restaurantName",
+                totalQuantity: 1,
+                donationsCount: 1
+            }
+        },
+        { $sort: { totalQuantity: -1 } }
+    ]);
+
+    // Get user's position
+    const userPosition = topDonors.findIndex(donor => 
+        donor._id.toString() === restaurantId.toString()
+    ) + 1;
+
+    // Get restaurant's donation data
+    const restaurantData = topDonors.find(donor => 
+        donor._id.toString() === restaurantId.toString()
+    );
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            topDonors: topDonors.slice(0, 5),
+            userRank: {
+                position: userPosition,
+                ...restaurantData
+            }
+        }, "Restaurant leaderboard fetched successfully")
+    );
+});
+
+export {  addFoodItem, getFoodItems, donateFoodItem, foodDonationHistory, checkDeliveryStatus, getRestaurantLeaderboard }

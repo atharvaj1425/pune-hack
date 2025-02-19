@@ -360,12 +360,88 @@ const getActiveMeals = asyncHandler(async (req, res) => {
     // Fetch the active meals for the user
     const activeMeals = await SingleMeal.find({
         acceptedById: userId,
-        status: "Accepted",
+        status: { $in: ["Accepted", "Out for Delivery"] },
     }).populate("donor", "name");
 
     return res.status(200).json(new ApiResponse(200, activeMeals, "Active meals fetched successfully"));
 });
 
-export { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals };
+const getUserLeaderboard = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    // Get top 5 individual donors
+    const topDonors = await SingleMeal.aggregate([
+        {
+            $match: {
+                status: { $in: ["Delivered", "Accepted", "Out for Delivery"] }
+            }
+        },
+        {
+            $group: {
+                _id: "$donor",
+                totalQuantity: {
+                    $sum: {
+                        $toInt: {
+                            $replaceAll: {
+                                input: "$quantity",
+                                find: " ",
+                                replacement: ""
+                            }
+                        }
+                    }
+                },
+                donationsCount: { $sum: 1 }
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "_id",
+                foreignField: "_id",
+                as: "userDetails"
+            }
+        },
+        { $unwind: "$userDetails" },
+        {
+            $match: {
+                "userDetails.role": "individual"
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                name: "$userDetails.name",
+                totalQuantity: 1,
+                donationsCount: 1
+            }
+        },
+        { $sort: { totalQuantity: -1 } }
+    ]);
+
+    // Get all donors for ranking
+    const allDonors = [...topDonors];
+    
+    // Find user's position
+    const userPosition = allDonors.findIndex(donor => 
+        donor._id.toString() === userId.toString()
+    ) + 1;
+
+    // Get user's donation data
+    const userData = allDonors.find(donor => 
+        donor._id.toString() === userId.toString()
+    );
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            topDonors: topDonors.slice(0, 5),
+            userRank: {
+                position: userPosition,
+                ...userData
+            }
+        }, "Leaderboard fetched successfully")
+    );
+});
+
+export { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals, getUserLeaderboard };
 
 

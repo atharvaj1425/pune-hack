@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { FaHotel } from "react-icons/fa";
 import { FaSignOutAlt } from "react-icons/fa"; // Added for logout icon
 import { useNavigate } from 'react-router-dom'; // Added for navigation
-
+import RestaurantLeaderboardModal from './RestaurantLeaderboardModal'; // Added for Restaurant Leaderboard Modal
 const NavBar = () => {
   const [userEmail, setUserEmail] = useState("");
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const navigate = useNavigate(); // React Router hook for navigation
 const [userName, setUserName] = useState("");
   useEffect(() => {
@@ -50,6 +51,10 @@ const [userName, setUserName] = useState("");
         <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
           Network
         </div>
+        <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800 cursor-pointer"
+          onClick={() => setShowLeaderboard(true)}>
+            Leaderboard
+        </div>
       </div>
 
       {/* User Icon with Username and Logout button */}
@@ -66,6 +71,7 @@ const [userName, setUserName] = useState("");
               Logout <FaSignOutAlt className="ml-2" />
         </button>
       </div>
+      {showLeaderboard && <RestaurantLeaderboardModal onClose={() => setShowLeaderboard(false)} />}
     </div>
   );
 };

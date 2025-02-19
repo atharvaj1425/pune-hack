@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import Login from '../../Components/Homepage/Login';
 import AOS from "aos";
 import "aos/dist/aos.css";
-
+import axios from 'axios';
 
 // Set the app element for react-modal
 Modal.setAppElement('#root');
@@ -12,7 +12,8 @@ Modal.setAppElement('#root');
 const HomePage = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [currentCard, setCurrentCard] = useState(0);
-
+  const [topDonors, setTopDonors] = useState([]);
+  const [topRestaurants, setTopRestaurants] = useState([]);
   const carouselData = [
     {
       imgSrc: "/food-sharing.png",
@@ -46,6 +47,23 @@ const HomePage = () => {
   const toggleLoginPopup = () => {
     setShowLoginPopup(!showLoginPopup);
   };
+
+  useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      try {
+        const [donorsResponse, restaurantsResponse] = await Promise.all([
+          axios.get('/api/v1/leaderboard/top-individual-donors'),
+          axios.get('/api/v1/leaderboard/top-restaurant-donors')
+        ]);
+        setTopDonors(donorsResponse.data.data);
+        setTopRestaurants(restaurantsResponse.data.data);
+      } catch (error) {
+        console.error('Error fetching leaderboard data:', error);
+      }
+    };
+
+    fetchLeaderboardData();
+  }, []);
 
   return (
     <div className="bg-green-100 min-h-screen flex flex-col relative w-full">
@@ -166,6 +184,68 @@ const HomePage = () => {
 
       {/* New Innovative Sections */}
       
+            {/* Leaderboard Section */}
+            <section className="py-16 bg-green-50" data-aos="fade-up" data-aos-duration="1000">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-green-800 mb-12">
+            Our Top Contributors
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Individual Donors */}
+            <div className="bg-white rounded-lg shadow-xl p-6">
+              <h3 className="text-2xl font-bold text-green-700 mb-6">Top Individual Donors</h3>
+              <div className="space-y-4">
+                {topDonors.map((donor, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-green-50 rounded-lg transform transition-all duration-300 hover:scale-105"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                        index === 0 ? 'bg-yellow-400' :
+                        index === 1 ? 'bg-gray-300' :
+                        index === 2 ? 'bg-amber-600' : 'bg-green-200'
+                      }`}>
+                        <span className="font-bold text-white">{index + 1}</span>
+                      </div>
+                      <span className="font-semibold text-gray-700">{donor.donor}</span>
+                    </div>
+                    <span className="text-green-600 font-bold">{donor.totalQuantity} kg</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Restaurant Donors */}
+            <div className="bg-white rounded-lg shadow-xl p-6">
+              <h3 className="text-2xl font-bold text-green-700 mb-6">Top Restaurant Donors</h3>
+              <div className="space-y-4">
+                {topRestaurants.map((restaurant, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-green-50 rounded-lg transform transition-all duration-300 hover:scale-105"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                        index === 0 ? 'bg-yellow-400' :
+                        index === 1 ? 'bg-gray-300' :
+                        index === 2 ? 'bg-amber-600' : 'bg-green-200'
+                      }`}>
+                        <span className="font-bold text-white">{index + 1}</span>
+                      </div>
+                      <span className="font-semibold text-gray-700">{restaurant.donor}</span>
+                    </div>
+                    <span className="text-green-600 font-bold">{restaurant.totalQuantity} kg</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Continue with existing sections... */}
+
       {/* Statistics Section with Counter Animation */}
       <section className="py-12 bg-gradient-to-r from-green-800 to-green-800" data-aos="flip-up" data-aos-duration="1000">
         <div className="container mx-auto px-4">
@@ -265,3 +345,5 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+

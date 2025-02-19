@@ -14,6 +14,7 @@ const ActiveDonation = ({ onClose }) => {
         const response = await axios.get('/api/v1/users/active-donation', {
           withCredentials: true,
         });
+        console.log(response.data);
         setDonation(response.data.data);
       } catch (err) {
         console.error('Error fetching active donation:', err);
@@ -54,7 +55,7 @@ const ActiveDonation = ({ onClose }) => {
                 <td className="py-2 px-4 border-b">{donation.quantity}</td>
                 <td className="py-2 px-4 border-b">{new Date(donation.schedulePickUp).toLocaleDateString()}</td>
                 <td className="py-2 px-4 border-b">{donation.pincode}</td>
-                <td className="py-2 px-4 border-b">{donation.accepetedBy}</td>
+                <td className="py-2 px-4 border-b">{donation.acceptedBy}</td>
                 <td className="py-2 px-4 border-b">{donation.status}</td>
               </tr>
             </tbody>

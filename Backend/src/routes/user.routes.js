@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals } from "../controllers/user.controller.js";
+import { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals, getUserLeaderboard } from "../controllers/user.controller.js";
 import { verifyUserJWT } from "../middlewares/auth.middleware.js";
 import { authorizeRoles } from "../middlewares/role.middleware.js";
 
@@ -25,5 +25,11 @@ router.route("/active-donation").get(verifyUserJWT, authorizeRoles("individual")
 router.put('/update-status/:donationId',verifyUserJWT, authorizeRoles("individual"), updateDonationStatus);
 
 router.route("/active-meals").get(verifyUserJWT, authorizeRoles("individual"), getActiveMeals);
+
+router.get("/user-ranking", 
+    verifyUserJWT, 
+    authorizeRoles("individual"), 
+    getUserLeaderboard
+);
 
 export default router;
