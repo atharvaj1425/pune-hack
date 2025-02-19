@@ -3,7 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { 
   FaBoxOpen, FaCalendarAlt, FaSortNumericUp, FaCalendarTimes, FaCheckCircle, 
-  FaTimes, FaQuoteLeft, FaQuoteRight 
+  FaTimes, FaQuoteLeft, FaQuoteRight, FaMicrophone 
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import AOS from 'aos';
@@ -17,6 +17,7 @@ const FoodInventory = ({ closeModal }) => {
     quantity: '',
     expiryDate: '',
   });
+  const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -32,6 +33,24 @@ const FoodInventory = ({ closeModal }) => {
     }));
   };
 
+  const handleVoiceInput = () => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.start();
+    setIsListening(true);
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setFormData((prevData) => ({ ...prevData, name: transcript }));
+      setIsListening(false);
+    };
+
+    recognition.onerror = () => {
+      toast.error('Voice input failed. Please try again.');
+      setIsListening(false);
+    };
+  };
+
   const handleAddFoodItem = async () => {
     const { name, manufacturingDate, quantity, expiryDate } = formData;
     if (!name || !manufacturingDate || !quantity || !expiryDate) {
@@ -41,13 +60,12 @@ const FoodInventory = ({ closeModal }) => {
 
     try {
       await axios.post("/api/v1/users/addFoodItem", formData);
-     
+      
       toast.success('Food item added successfully!');
-
-    // Delay modal close slightly (optional)
-    setTimeout(() => {
-      closeModal();
-    }, 1000);
+      
+      setTimeout(() => {
+        closeModal();
+      }, 1000);
     } catch (error) {
       toast.error('Failed to add food item. Please try again later.');
     }
@@ -87,16 +105,22 @@ const FoodInventory = ({ closeModal }) => {
 
         {/* Form */}
         <div className="space-y-4">
-          <div>
+          <div className="relative">
             <label className="block font-semibold">Food Item Name:</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border rounded-md pr-10"
               placeholder="Enter food item name"
             />
+            <button
+              onClick={handleVoiceInput}
+              className="absolute right-2 top-9 text-gray-600 hover:text-green-600"
+            >
+              <FaMicrophone className={`text-xl ${isListening ? 'animate-pulse text-green-600' : ''}`} />
+            </button>
           </div>
 
           <div>

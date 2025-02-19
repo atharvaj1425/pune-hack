@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FaBoxOpen, FaCalendarAlt, FaSortNumericUp, FaCalendarTimes, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
+import { FaBoxOpen, FaCalendarAlt, FaSortNumericUp, FaCalendarTimes, FaCheckCircle, FaArrowLeft, FaMicrophone } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
@@ -18,10 +18,10 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
 
   const navigate = useNavigate();
 
-  // Initialize AOS animations
   useEffect(() => {
     AOS.init();
   }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -29,8 +29,25 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
       [name]: value,
     }));
   };
-  
-  
+
+  // Voice Recognition for Food Name Input
+  const handleVoiceInput = () => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const voiceText = event.results[0][0].transcript;
+      setFormData((prevData) => ({ ...prevData, name: voiceText }));
+      toast.success('Voice input recognized!');
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Voice recognition error:', event.error);
+      toast.error('Could not recognize speech. Try again.');
+    };
+  };
+
   const handleAddFoodItem = async () => {
     const { name, manufacturingDate, quantity, expiryDate } = formData;
 
@@ -42,13 +59,10 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
     try {
       console.log("Sending data to backend:", formData);
       
-    
       const response = await axios.post("/api/v1/restaurants/addFoodItem", formData);
-     if(response.status === 200 || response.status === 201){
-      toast.success('Food item added successfully!');
-     }
-    
-      console.log("Response from backend:", response.data);
+      if (response.status === 200 || response.status === 201) {
+        toast.success('Food item added successfully!');
+      }
 
       const newFoodItem = {
         id: response.data._id,
@@ -64,22 +78,15 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
 
       localStorage.setItem("foodItems", JSON.stringify(updatedFoodItems));
       setFoodItems(updatedFoodItems);
-     
       setFormData({ name: '', manufacturingDate: '', quantity: '', expiryDate: '' });
      
-      updateFoodItems(newFoodItem); // Update the food items in the parent component
+      updateFoodItems(newFoodItem);
       setTimeout(() => {
         closeModal();
-      }, 1000); // Close the modal on successful submission
+      }, 1000);
     } catch (error) {
       console.error("Error adding food item:", error);
-
-      if (error.response) {
-        console.error("Backend error response:", error.response.data);
-        toast.error(error.response.data.error || "Failed to add food item.");
-      } else {
-        toast.error('Failed to add food item. Please try again later.');
-      }
+      toast.error('Failed to add food item. Please try again later.');
     }
   };
 
@@ -107,15 +114,21 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
           <label className="block text-gray-700 font-medium mb-2 flex items-center">
             <FaBoxOpen className="mr-2 text-green-500" /> Name of Food Item:
           </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Enter food item name"
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+          <div className="flex items-center border border-gray-300 rounded-lg shadow-md p-4">
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Enter food item name"
+              className="w-full outline-none bg-transparent"
+            />
+            <button onClick={handleVoiceInput} className="ml-2 text-green-600 hover:text-green-700">
+              <FaMicrophone className="text-xl" />
+            </button>
+          </div>
         </div>
+
         <div data-aos="flip-left" data-aos-delay="100">
           <label className="block text-gray-700 font-medium mb-2 flex items-center">
             <FaCalendarAlt className="mr-2 text-green-500" /> Manufacturing Date:
@@ -128,12 +141,13 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
+        
         <div data-aos="flip-left" data-aos-delay="200">
           <label className="block text-gray-700 font-medium mb-2 flex items-center">
             <FaSortNumericUp className="mr-2 text-green-500" /> Quantity:
           </label>
           <input
-            type="String"
+            type="text"
             name="quantity"
             value={formData.quantity}
             onChange={handleInputChange}
@@ -141,6 +155,7 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
+
         <div data-aos="flip-left" data-aos-delay="300">
           <label className="block text-gray-700 font-medium mb-2 flex items-center">
             <FaCalendarTimes className="mr-2 text-green-500" /> Expiry Date:
@@ -153,6 +168,7 @@ const FoodInventory = ({ closeModal, updateFoodItems }) => {
             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
+
         <button
           onClick={handleAddFoodItem}
           className="w-full p-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 flex justify-center items-center text-xl"
