@@ -38,7 +38,7 @@ const VolunteerPage = () => {
             <div className="col-span-2">
              <Volunteer/>
             </div>
-            {/* <Fridge /> */}
+            <Fridge />
           </div>
 
           {/* Analytics component */}
