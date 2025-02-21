@@ -14,6 +14,18 @@ const NavBar = () => {
   const [showActiveDonation, setShowActiveDonation] = useState(false);
   const [showDonationHistory, setShowDonationHistory] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);  const [activeDonationExists, setActiveDonationExists] = useState(false);
+  const [showDeliveredDonations, setShowDeliveredDonations] = useState(false);
+
+const handleCloseDeliveredDonations = () => {
+  setShowDeliveredDonations(false);
+};
+const handleCloseDonationHistory = () => {
+  setShowDonationHistory(false);
+};
+
+const handleCloseActiveDonation = () => {
+  setShowActiveDonation(false);
+};
   const navigate = useNavigate();
 
   useEffect(() => {

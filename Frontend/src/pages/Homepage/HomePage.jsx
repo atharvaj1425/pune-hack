@@ -186,7 +186,7 @@ const HomePage = () => {
       {/* New Innovative Sections */}
       
             {/* Leaderboard Section */}
-            <section className="py-16 bg-green-50" data-aos="fade-up" data-aos-duration="1000">
+            <section className="py-16 bg-green-100" data-aos="fade-up" data-aos-duration="1000">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-green-800 mb-12">
             Our Top Contributors
@@ -281,7 +281,7 @@ const HomePage = () => {
             <div className="bg-white p-6 rounded-lg shadow-lg transform hover:-translate-y-2 transition duration-300 " data-aos="fade-right" data-aos-duration="1000">
               <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="User" className="w-16 h-16 rounded-full mx-auto mb-4"/>
               <p className="text-gray-600 italic mb-4">"The platform has streamlined our food distribution process significantly."</p>
-              <h4 className="font-semibold text-green-800">Srushti Jadhav</h4>
+              <h4 className="font-semibold text-green-800">Nikita Padhye</h4>
               <p className="text-sm text-green-600">NGO Director</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-lg transform hover:-translate-y-2 transition duration-300 " data-aos="fade-right" data-aos-duration="1000">

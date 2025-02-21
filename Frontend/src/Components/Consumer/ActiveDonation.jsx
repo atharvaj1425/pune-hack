@@ -111,7 +111,7 @@ const ActiveDonation = ({ onClose }) => {
                   </td>
                   <td className="py-3 px-6 text-center">
                     <FaUser className="inline text-blue-500 mr-2" />
-                    {donation.accepetedBy || 'N/A'}
+                    {donation.acceptedBy || 'N/A'}
                   </td>
                   <td className="py-3 px-6 text-center font-semibold">
                     {donation.status}
