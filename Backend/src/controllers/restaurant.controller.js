@@ -61,15 +61,61 @@ const generateAccessToken = async(userId) => {
 //     )
 // })
 
+// const getFoodItems = asyncHandler(async (req, res) => {
+//     const userId = req.user._id; // Assuming req.user is populated by authentication middleware
+
+//     const foodItems = await RestaurantFoodItem.find({ restaurantUser: userId });
+
+
+//     // Update statuses for all food items
+//     const updatedFoodItems = await Promise.all(
+//         foodItems.map(async (item) => {
+//             const today = new Date();
+//             const expiry = new Date(item.expiryDate);
+//             const diffTime = expiry - today;
+//             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+//             let newStatus = "";
+//             if (diffDays > 7) newStatus = "good";
+//             else if (diffDays <= 7 && diffDays >= 0) newStatus = "expiring soon";
+//             else newStatus = "expired";
+
+//             if (item.status !== newStatus) {
+//                 await RestaurantFoodItem.findByIdAndUpdate(
+//                     item._id,
+//                     { $set: { status: newStatus } },
+//                     { new: true }
+//                 );
+//             }
+
+//             return { ...item._doc, status: newStatus };
+//         })
+//     );
+
+//     return res.status(200).json(new ApiResponse(200, updatedFoodItems, "Food items fetched successfully"));
+// });
+
 const getFoodItems = asyncHandler(async (req, res) => {
-    const userId = req.user._id; // Assuming req.user is populated by authentication middleware
+    const userId = req.user._id;
 
     const foodItems = await RestaurantFoodItem.find({ restaurantUser: userId });
 
-
-    // Update statuses for all food items
+    // Update statuses for all food items that are NOT marked as "used" and have quantity > 0
     const updatedFoodItems = await Promise.all(
         foodItems.map(async (item) => {
+            if (item.status === "used" || item.quantity === 0) {
+                // Ensure items with quantity 0 are marked as "used"
+                if (item.quantity === 0 && item.status !== "used") {
+                    await RestaurantFoodItem.findByIdAndUpdate(
+                        item._id,
+                        { $set: { status: "used" } },
+                        { new: true }
+                    );
+                    return { ...item._doc, status: "used" };
+                }
+                return item; // Skip updating "used" items
+            }
+
             const today = new Date();
             const expiry = new Date(item.expiryDate);
             const diffTime = expiry - today;
@@ -92,8 +138,60 @@ const getFoodItems = asyncHandler(async (req, res) => {
         })
     );
 
-    return res.status(200).json(new ApiResponse(200, updatedFoodItems, "Food items fetched successfully"));
+    // Filter to include only 'good' and 'expiring soon' items
+    const filteredItems = updatedFoodItems.filter(item => 
+        item.status === "good" || item.status === "expiring soon"
+    );
+
+    console.log(filteredItems);
+    return res.status(200).json(
+        new ApiResponse(
+            200, 
+            filteredItems, 
+            "Active food items fetched successfully"
+        )
+    );
 });
+
+const updateFoodItemStatus = asyncHandler(async (req, res) => {
+    const { itemId } = req.params;
+    const { status, quantity } = req.body;
+
+    console.log("🔹 Received Request - Item ID:", itemId, " | Status:", status, " | Quantity:", quantity);
+
+    if (!itemId || status === undefined || quantity === undefined) {
+        console.error("❌ Missing parameters: Item ID, status, and quantity are required");
+        throw new ApiError(400, "Item ID, status, and quantity are required");
+    }
+
+    const foodItem = await RestaurantFoodItem.findById(itemId);
+    console.log("🔹 Fetched Food Item:", foodItem);
+
+    if (!foodItem) {
+        console.error("❌ Food item not found");
+        throw new ApiError(404, "Food item not found");
+    }
+
+    if (foodItem.restaurantUser.toString() !== req.user._id.toString()) {
+        console.error("❌ Unauthorized: User does not own this item");
+        throw new ApiError(403, "You are not authorized to update this item");
+    }
+
+    if (quantity < 0 || quantity > foodItem.quantity) {
+        console.error("❌ Invalid quantity");
+        throw new ApiError(400, "Invalid quantity entered");
+    }
+
+    // Update quantity and status
+    foodItem.quantity = quantity;
+    foodItem.status = quantity === 0 ? "used" : status;
+    await foodItem.save();
+
+    console.log("✅ Updated Food Item:", foodItem);
+
+    return res.status(200).json(new ApiResponse(200, foodItem, "Food item status and quantity updated successfully"));
+});
+
 
 const addFoodItem = asyncHandler(async (req, res) => {
     const updateFoodItemStatus = (expiryDate) => {
@@ -359,4 +457,4 @@ const getRestaurantLeaderboard = asyncHandler(async (req, res) => {
     );
 });
 
-export {  addFoodItem, getFoodItems, donateFoodItem, foodDonationHistory, checkDeliveryStatus, getRestaurantLeaderboard }
+export {  addFoodItem, getFoodItems, donateFoodItem, foodDonationHistory, checkDeliveryStatus, getRestaurantLeaderboard, updateFoodItemStatus }

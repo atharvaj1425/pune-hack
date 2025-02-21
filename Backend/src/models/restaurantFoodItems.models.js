@@ -19,7 +19,7 @@ const restaurantFoodItemSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['good', 'expiring soon', 'expired'],
+        enum: ['good', 'expiring soon', 'expired', 'used'],
         required: true
     },
     restaurantUser: {

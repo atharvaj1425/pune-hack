@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LuLeaf } from 'react-icons/lu';
 import Modal from 'react-modal';
-import Login from '../../Components/Homepage/Login';
+import Login from '../../Components/HomePage/Login';
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Google_Translate from '../../Components/Google_Translate';

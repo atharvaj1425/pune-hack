@@ -20,13 +20,73 @@ const Login = ({ closeModal }) => {
         password: "",
         name: "",
         address: "",
+        latitude: "",
+        longitude: "",
         pincode: "",
-        role: "individual", 
+        role: "individual",
         phoneNumber: "",
         agreeToTerms: false
     });
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const navigate = useNavigate();
+
+    // const fetchCurrentLocation = () => {
+    //     if ("geolocation" in navigator) {
+    //         navigator.geolocation.getCurrentPosition(
+    //             (position) => {
+    //                 setFormData(prev => ({
+    //                     ...prev,
+    //                     latitude: position.coords.latitude.toString(),
+    //                     longitude: position.coords.longitude.toString()
+    //                 }));
+    //                 toast.success("Location fetched successfully!");
+    //             },
+    //             (error) => {
+    //                 toast.error("Error getting location: " + error.message);
+    //             }
+    //         );
+    //     } else {
+    //         toast.error("Geolocation is not supported by your browser");
+    //     }
+    // };
+
+    const fetchCurrentLocation = () => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setFormData(prev => ({
+                        ...prev,
+                        latitude: position.coords.latitude.toString(),
+                        longitude: position.coords.longitude.toString()
+                    }));
+                    toast.success("Location fetched successfully!");
+                },
+                (error) => {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            toast.error("User denied location access");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            toast.error("Location information unavailable");
+                            break;
+                        case error.TIMEOUT:
+                            toast.error("Location request timed out");
+                            break;
+                        default:
+                            toast.error("An unknown error occurred");
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            toast.error("Geolocation is not supported by your browser");
+        }
+    };
+
 
     const handleInputChange = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -40,11 +100,11 @@ const Login = ({ closeModal }) => {
         e.preventDefault();
         setIsLoading(true);
         const userData = { email: formData.email, password: formData.password };
-    
+
         try {
             const response = await axios.post("/api/v1/auth/login", userData);
             console.log(response);
-    
+
             if (response.status === 200) {
                 const data = response.data;
                 localStorage.setItem("accessToken", data.accessToken);
@@ -53,7 +113,7 @@ const Login = ({ closeModal }) => {
                 localStorage.setItem("userRole", data.user.role);
                 localStorage.setItem("userName", data.user.name);
                 toast.success("Logged in Successfully");
-    
+
                 setTimeout(() => {
                     if (data.user.role === "individual") {
                         navigate("/consumer");
@@ -76,38 +136,101 @@ const Login = ({ closeModal }) => {
         }
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.type === "application/pdf" || file.type.startsWith("image/")) {
+                if (file.size <= 5 * 1024 * 1024) { // 5MB limit
+                    setFormData(prev => ({
+                        ...prev,
+                        verificationDoc: file
+                    }));
+                    toast.success("File selected successfully");
+                } else {
+                    toast.error("File size should be less than 5MB");
+                    e.target.value = null;
+                }
+            } else {
+                toast.error("Please upload only PDF or image files");
+                e.target.value = null;
+            }
+        }
+    };
+
     const registerHandler = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        console.log("Register handler initiated");
-        console.log("Form data:", formData);
-
-        if (!formData.agreeToTerms) {
-            console.log("Terms not agreed to");
-            toast.error("Please agree to Terms & Conditions");
-            setIsLoading(false);
-            return;
-        }
-
-        console.log("Attempting registration request...");
-
+    
         try {
-            console.log("Attempting registration request...");
-            const response = await axios.post("/api/v1/auth/register", formData);
+            // Validation checks
+            if (!formData.agreeToTerms) {
+                toast.error("Please agree to Terms & Conditions");
+                return;
+            }
+    
+            if (!formData.latitude || !formData.longitude) {
+                toast.error("Please fetch your current location");
+                return;
+            }
+    
+            // Check if document is required for selected role
+            const requiresDoc = ['restaurant', 'ngo', 'catering/university mess'].includes(formData.role);
+            if (requiresDoc && !formData.verificationDoc) {
+                toast.error("Please upload verification document");
+                return;
+            }
+    
+            // Create FormData object
+            const formDataToSend = new FormData();
+    
+            // Append all form fields except verificationDoc and agreeToTerms
+            Object.keys(formData).forEach(key => {
+                if (key !== 'verificationDoc' && key !== 'agreeToTerms') {
+                    formDataToSend.append(key, formData[key]);
+                }
+            });
+    
+            // Append file if exists
+            if (formData.verificationDoc) {
+                formDataToSend.append('verificationDoc', formData.verificationDoc);
+                console.log("Adding file to form data:", formData.verificationDoc.name);
+            }
+    
+            console.log("Sending registration request...");
+            
+            const response = await axios.post("/api/v1/auth/register", formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+    
             console.log("Registration response:", response);
-
+    
             if (response.status === 201) {
-                console.log("Registration successful");
                 toast.success("Registration Successful!");
+                
+                // Clear form data
+                setFormData({
+                    email: "",
+                    password: "",
+                    name: "",
+                    address: "",
+                    latitude: "",
+                    longitude: "",
+                    pincode: "",
+                    role: "individual",
+                    phoneNumber: "",
+                    verificationDoc: null,
+                    agreeToTerms: false
+                });
+    
+                // Switch to login view
                 setTimeout(() => {
-                    console.log("Switching to login");
                     setIsLogin(true);
                 }, 1000);
             }
         } catch (error) {
             console.error("Registration error:", error);
-            console.log("Error response:", error.response);
-            
             toast.error(error.response?.data?.message || "Registration Failed", {
                 position: "top-center",
                 autoClose: 3000,
@@ -118,30 +241,29 @@ const Login = ({ closeModal }) => {
                 progress: undefined,
             });
         } finally {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 1000);
+            setIsLoading(false);
         }
     };
+    
     useEffect(() => {
         AOS.init({ duration: 1000 });
     }, []);
-    
+
     if (isLoading) {
-        
+
         return (
             <div className="fixed inset-0 flex items-center justify-center">
-                <l-hourglass 
-                flex items-center justify-center
+                <l-hourglass
+                    flex items-center justify-center
                     size="100"
                     bg-opacity="0.1"
-                    speed="1.75" 
+                    speed="1.75"
                     color="white"
                 ></l-hourglass>
             </div>
         );
     }
-   
+
 
     return (
         <div className="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-xl relative " data-aos="fade-left">
@@ -166,7 +288,7 @@ const Login = ({ closeModal }) => {
             </div>
 
             <div className="max-h-[60vh] overflow-y-auto px-6 md:px-12">
-    <form className="space-y-4" onSubmit={isLogin ? loginHandler : registerHandler}>
+                <form className="space-y-4" onSubmit={isLogin ? loginHandler : registerHandler}>
 
                     {!isLogin && (
                         <>
@@ -230,11 +352,36 @@ const Login = ({ closeModal }) => {
                                     <option value="restaurant">Restaurant</option>
                                     <option value="ngo">NGO</option>
                                     <option value="volunteer">Volunteer</option>
+                                    <option value="volunteer">Catering Service / University mess</option>
                                 </select>
                             </div>
                         </>
                     )}
-                    
+
+                    {!isLogin && (
+                        <>
+                            {/* ...existing fields... */}
+
+                            {['restaurant', 'ngo', 'catering/university mess'].includes(formData.role) && (
+                                <div className="space-y-2">
+                                    <label className="block text-gray-700 font-medium">
+                                        Verification Document:
+                                        <span className="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <input
+                                        type="file"
+                                        onChange={handleFileChange}
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    />
+                                    <p className="text-xs text-gray-500">
+                                        Accepted formats: PDF, JPG, PNG (Max size: 5MB)
+                                    </p>
+                                </div>
+                            )}
+                        </>
+                    )}
+
                     <div>
                         <label className="block text-gray-700 font-medium mb-2">Email:</label>
                         <input
@@ -259,6 +406,47 @@ const Login = ({ closeModal }) => {
                             placeholder="Enter your password"
                         />
                     </div>
+                    {!isLogin && (
+                        <>
+                            {/* ...existing register fields... */}
+
+                            <div className="space-y-4">
+                                <label className="block text-gray-700 font-medium mb-2">Location:</label>
+                                <button
+                                    type="button"
+                                    onClick={fetchCurrentLocation}
+                                    className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 mb-2"
+                                >
+                                    Fetch Current Location
+                                </button>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <input
+                                            type="text"
+                                            name="latitude"
+                                            value={formData.latitude}
+                                            readOnly
+                                            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50"
+                                            placeholder="Latitude"
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            name="longitude"
+                                            value={formData.longitude}
+                                            readOnly
+                                            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50"
+                                            placeholder="Longitude"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Place this before the Terms & Conditions checkbox */}
+                        </>
+                    )}
+
 
                     {!isLogin && (
                         <div className="flex items-center space-x-2 bg-gray-50 p-4 rounded-lg border border-gray-200 hover:bg-gray-100 transition-all duration-300">
@@ -333,7 +521,7 @@ const Login = ({ closeModal }) => {
                 </div>
             )}
 
-            <ToastContainer 
+            <ToastContainer
                 position="top-center"
                 autoClose={3000}
                 hideProgressBar={false}

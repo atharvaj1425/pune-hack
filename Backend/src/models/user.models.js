@@ -15,6 +15,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    location: {
+        type: {
+            latitude: String,
+            longitude: String
+        },
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -35,6 +42,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['individual', 'restaurant', 'ngo', 'volunteer', 'catering/university mess'],
         required: true
+    },
+    verificationDoc: {
+    type: String,
+    required: function() {
+        return ['restaurant', 'ngo', 'catering/university mess'].includes(this.role);
+        }
     },
    phoneNumber:{
         type: String,

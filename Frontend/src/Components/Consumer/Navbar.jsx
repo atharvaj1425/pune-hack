@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { FaHotel } from "react-icons/fa";
-import { FaSignOutAlt } from "react-icons/fa"; // Logout icon
-import { useNavigate } from 'react-router-dom'; // React Router hook for navigation
+import { FaSignOutAlt } from "react-icons/fa";
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import ActiveDonation from './ActiveDonation';
+import DonationHistory from './DonationHistory';
 import LeaderboardModal from './LeaderboardModal';
-import ActiveDonation from "./ActiveDonation";
-import DonationHistory from "./DonationHistory";
-import { Link } from "react-router-dom";
-import axios from "axios";
 
 const NavBar = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [showActiveDonation, setShowActiveDonation] = useState(false);
   const [showDonationHistory, setShowDonationHistory] = useState(false);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);  const [activeDonationExists, setActiveDonationExists] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [activeDonationExists, setActiveDonationExists] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,20 +22,25 @@ const NavBar = () => {
     if (email) setUserEmail(email);
     if (username) setUserName(username);
 
-    // Fetch if there's an active donation
     const checkActiveDonation = async () => {
       try {
-        const response = await axios.get("/api/v1/users/active-donation", {
+        const response = await axios.get("/api/v1/users/getActiveDonation", {
           withCredentials: true,
         });
-        setActiveDonationExists(response.data.data ? true : false);
+        setActiveDonationExists(!!response.data.data);
       } catch (err) {
         console.error("Error fetching active donation:", err);
+        setActiveDonationExists(false);
       }
     };
 
     checkActiveDonation();
   }, []);
+
+  // Modal handlers
+  const handleCloseActiveDonation = () => setShowActiveDonation(false);
+  const handleCloseDonationHistory = () => setShowDonationHistory(false);
+  const handleCloseLeaderboard = () => setShowLeaderboard(false);
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -68,7 +73,6 @@ const NavBar = () => {
           onClick={() => setShowActiveDonation(true)}
         >
           Current Donation
-          {/* Small Red Notification Dot */}
           {activeDonationExists && (
             <span className="absolute top-2 left-28 mt-0.5 ml-7 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
           )}
@@ -79,18 +83,18 @@ const NavBar = () => {
         >
           Single Meal Status
         </Link>
-        <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800" 
-            onClick={() => setShowLeaderboard(true)}>
-            Leaderboard
+        <div 
+          className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800 cursor-pointer"
+          onClick={() => setShowLeaderboard(true)}
+        >
+          Leaderboard
         </div>
       </div>
 
-      {/* User Icon with Username beside it on the right side */}
+      {/* Right Side */}
       <div className="flex items-center">
         <img src="/login.png" alt="Login" className="w-12 h-12 mr-2" />
         <div className="text-lg font-bold mr-4">{userName || "Guest"}</div>
-
-        {/* Logout Button */}
         <button
           onClick={handleLogout}
           className="flex items-center bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
@@ -99,8 +103,8 @@ const NavBar = () => {
         </button>
       </div>
 
-      {showLeaderboard && <LeaderboardModal onClose={() => setShowLeaderboard(false)} />}
-      {showDeliveredDonations && <DeliveredDonations onClose={handleCloseDeliveredDonations} />}
+      {/* Modals */}
+      {showLeaderboard && <LeaderboardModal onClose={handleCloseLeaderboard} />}
       {showActiveDonation && <ActiveDonation onClose={handleCloseActiveDonation} />}
       {showDonationHistory && <DonationHistory onClose={handleCloseDonationHistory} />}
     </div>

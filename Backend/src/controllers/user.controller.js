@@ -88,13 +88,26 @@ const generateAccessToken = async(userId) => {
 // });
 
 const getFoodItems = asyncHandler(async (req, res) => {
-    const userId = req.user._id; // Assuming `req.user` is populated by authentication middleware
+    const userId = req.user._id;
 
     const foodItems = await FoodItem.find({ user: userId });
 
-    // Update statuses for all food items
+    // Update statuses for all food items that are NOT marked as "used" and have quantity > 0
     const updatedFoodItems = await Promise.all(
         foodItems.map(async (item) => {
+            if (item.status === "used" || item.quantity === 0) {
+                // Ensure items with quantity 0 are marked as "used"
+                if (item.quantity === 0 && item.status !== "used") {
+                    await FoodItem.findByIdAndUpdate(
+                        item._id,
+                        { $set: { status: "used" } },
+                        { new: true }
+                    );
+                    return { ...item._doc, status: "used" };
+                }
+                return item; // Skip updating "used" items
+            }
+
             const today = new Date();
             const expiry = new Date(item.expiryDate);
             const diffTime = expiry - today;
@@ -117,7 +130,64 @@ const getFoodItems = asyncHandler(async (req, res) => {
         })
     );
 
-    return res.status(200).json(new ApiResponse(200, updatedFoodItems, "Food items fetched successfully"));
+    // Filter to include only 'good' and 'expiring soon' items
+    const filteredItems = updatedFoodItems.filter(item => 
+        item.status === "good" || item.status === "expiring soon"
+    );
+
+    console.log(filteredItems);
+    return res.status(200).json(
+        new ApiResponse(
+            200, 
+            filteredItems, 
+            "Active food items fetched successfully"
+        )
+    );
+});
+
+// Update Food Item Status
+const updateFoodItemStatus = asyncHandler(async (req, res) => {
+    try {
+        const { itemId } = req.params;
+        const { status, quantity } = req.body;
+
+        console.log("🔹 Received Request - Item ID:", itemId, " | Status:", status, " | Quantity:", quantity);
+
+        if (!itemId || status === undefined || quantity === undefined) {
+            console.error("❌ Missing parameters: Item ID, status, and quantity are required");
+            throw new ApiError(400, "Item ID, status, and quantity are required");
+        }
+
+        const foodItem = await FoodItem.findById(itemId);
+        console.log("🔹 Fetched Food Item:", foodItem);
+
+        if (!foodItem) {
+            console.error("❌ Food item not found");
+            throw new ApiError(404, "Food item not found");
+        }
+
+        if (foodItem.user.toString() !== req.user._id.toString()) {
+            console.error("❌ Unauthorized: User does not own this item");
+            throw new ApiError(403, "You are not authorized to update this item");
+        }
+
+        if (quantity < 0 || quantity > foodItem.quantity) {
+            console.error("❌ Invalid quantity");
+            throw new ApiError(400, "Invalid quantity entered");
+        }
+
+        // Update quantity and status
+        foodItem.quantity = quantity;
+        foodItem.status = quantity === 0 ? "used" : status;
+        await foodItem.save();
+
+        console.log("✅ Updated Food Item:", foodItem);
+
+        return res.status(200).json(new ApiResponse(200, foodItem, "Food item status and quantity updated successfully"));
+    } catch (error) {
+        console.error("❌ Error updating food item status:", error);
+        return res.status(500).json(new ApiResponse(500, null, "Failed to update food item status"));
+    }
 });
 
 const addFoodItem = asyncHandler(async (req, res) => {
@@ -442,6 +512,6 @@ const getUserLeaderboard = asyncHandler(async (req, res) => {
     );
 });
 
-export { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals, getUserLeaderboard };
+export { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals, getUserLeaderboard, updateFoodItemStatus };
 
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals, getUserLeaderboard } from "../controllers/user.controller.js";
+import { addFoodItem, getFoodItems, addSingleMeal, getSingleMeals, acceptSingleMeal, rejectSingleMeal, getDonationHistory, getActiveDonation, updateDonationStatus, getActiveMeals, getUserLeaderboard, updateFoodItemStatus } from "../controllers/user.controller.js";
 import { verifyUserJWT } from "../middlewares/auth.middleware.js";
 import { authorizeRoles } from "../middlewares/role.middleware.js";
 
@@ -8,6 +8,8 @@ const router = Router();
 // router.route("/login").post(loginUser)
 
 router.route("/getFoodItems").get(verifyUserJWT, authorizeRoles("individual"), getFoodItems)
+
+router.route("/updateFoodItemStatus/:itemId").put(verifyUserJWT, authorizeRoles("individual"), updateFoodItemStatus);
 
 // router.route("/getFoodItems").get(verifyUserJWT, authorizeRoles(['individuals']), getFoodItems);
 
@@ -31,5 +33,10 @@ router.get("/user-ranking",
     authorizeRoles("individual"), 
     getUserLeaderboard
 );
+
+
+
+
+
 
 export default router;
