@@ -53,8 +53,20 @@ const FoodInventory = ({ closeModal }) => {
 
   const handleAddFoodItem = async () => {
     const { name, manufacturingDate, quantity, expiryDate } = formData;
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
     if (!name || !manufacturingDate || !quantity || !expiryDate) {
       toast.error('Please fill in all fields!');
+      return;
+    }
+
+    if (expiryDate < today) {
+      toast.error('Expiry date cannot be before today!');
+      return;
+    }
+
+    if (manufacturingDate > today) {
+      toast.error('Manufacturing date cannot be in the future!');
       return;
     }
 

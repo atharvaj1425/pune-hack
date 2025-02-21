@@ -505,21 +505,22 @@ const Login = ({ closeModal }) => {
             </div>
 
             {showForgotPassword && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full transform transition-all duration-300 scale-100 hover:scale-105">
-                        <h3 className="text-2xl font-bold text-green-800 mb-4">Forgot Password</h3>
-                        <p className="text-gray-600 mb-6">
-                            Please contact the administrator at <span className="font-semibold">nourishai@gmail.com</span> to reset your password.
-                        </p>
-                        <button
-                            onClick={() => setShowForgotPassword(false)}
-                            className="w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full transform transition-all duration-300 scale-100 hover:scale-105">
+            <h3 className="text-2xl font-bold text-green-800 mb-4">Forgot Password</h3>
+            <p className="text-gray-600 mb-6">
+                Please contact the administrator at <span className="font-semibold">nourishai@gmail.com</span> to reset your password.
+            </p>
+            <button
+                onClick={() => setShowForgotPassword(false)}
+                className="w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
+            >
+                Close
+            </button>
+        </div>
+    </div>
+)}
+
 
             <ToastContainer
                 position="top-center"

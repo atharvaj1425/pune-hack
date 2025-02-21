@@ -192,7 +192,6 @@ const updateFoodItemStatus = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, foodItem, "Food item status and quantity updated successfully"));
 });
 
-
 const addFoodItem = asyncHandler(async (req, res) => {
     const updateFoodItemStatus = (expiryDate) => {
         const today = new Date();
