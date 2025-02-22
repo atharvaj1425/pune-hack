@@ -1,7 +1,7 @@
 import mongoose, {model, Schema} from "mongoose";
 
 const singleMealSchema = new mongoose.Schema({
-    mealDescription: {
+    foodName: {
         type: String,
         required: true,
     },
@@ -29,8 +29,14 @@ const singleMealSchema = new mongoose.Schema({
     },
     status: { 
         type: String, 
-        enum: ["Pending", "Accepted", "Out for Delivery", "Delivered", "Expired"], 
+        enum: ["Pending", "Accepted", "Arrival for Pick Up", "Out for Delivery", "Delivered", "Expired"], 
         default: "Pending" 
+    },
+    otp: {
+        type: String,
+    },
+    otpExpiry: {
+        type: Date,
     }
 }, { timestamps: true});
 

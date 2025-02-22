@@ -23,6 +23,7 @@ import NgoCurrentDonationPage from './pages/NgoCurrentDonationPage/currentdonati
 import Recipe_Bot from './pages/Recipe_Bot/Recipe_Bot.jsx';
 import SingleMealStatus from './Components/Consumer/SingleMealStatus.jsx';
 //import Google_Translate from './Components/Google_Translate.jsx';
+import NgoCurrentAcceptPage from './Components/NGO/ngocurrentaccept.jsx';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/recipe" element={<Recipe/>} />
           <Route path="/donation" element={<FoodDonation/>} />
           <Route path="/ngo" element={<Ngo/>} />
+          <Route path="/ngo-current-donation" element={<NgoCurrentAcceptPage />} />
           <Route path="/donate" element={<Donation_page/>} />
           <Route path="/volunteer-current-donation" element={<VolunteerCurrentPage/>} />
           <Route path="/volunteer-donation-history" element={<VolunteerHistoryPage/>} />

@@ -203,32 +203,92 @@ const getActiveDonation = asyncHandler(async(req, res) => {
     return res.status(200).json(new ApiResponse(200, activeDonation, "Donation history fetched successfully"));
 })
 
+// const updateDonationStatus = async (req, res) => {
+//     const { donationId } = req.params; // Get the donation ID from the URL parameters
+//     const { status } = req.body; // Get the new status from the request body
+  
+//     try {
+//       // Find the donation by its ID
+//       const donation = await FoodDonation.findById(donationId);
+  
+//       if (!donation) {
+//         return res.status(404).json({ message: 'Donation not found' });
+//       }
+  
+//       // Update the donation's status
+//       donation.status = status;
+  
+//       // Save the updated donation to the database
+//       await donation.save();
+  
+//       // Return the updated donation
+//       res.status(200).json({
+//         message: 'Donation status updated successfully',
+//         data: donation,
+//       });
+//     } catch (error) {
+//       console.error('Error updating donation status:', error);
+//       res.status(500).json({ message: 'Server error' });
+//     }
+// };
+
+
+import { generateAndSendOTP, verifyOTP } from '../utils/otp.js';
+
 const updateDonationStatus = async (req, res) => {
-    const { donationId } = req.params; // Get the donation ID from the URL parameters
-    const { status } = req.body; // Get the new status from the request body
-  
+    const { donationId } = req.params;
+    const { status, otp } = req.body;
+
     try {
-      // Find the donation by its ID
-      const donation = await FoodDonation.findById(donationId);
-  
-      if (!donation) {
-        return res.status(404).json({ message: 'Donation not found' });
-      }
-  
-      // Update the donation's status
-      donation.status = status;
-  
-      // Save the updated donation to the database
-      await donation.save();
-  
-      // Return the updated donation
-      res.status(200).json({
-        message: 'Donation status updated successfully',
-        data: donation,
-      });
-    } catch (error) {
-      console.error('Error updating donation status:', error);
-      res.status(500).json({ message: 'Server error' });
+        console.log(`Updating donation status for donationId: ${donationId}, status: ${status}`);
+
+        const donation = await FoodDonation.findById(donationId);
+        if (!donation) {
+            console.error('Donation not found');
+            return res.status(404).json({ message: 'Donation not found' });
+        }
+
+        if (status === 'Arrival for Pick Up') {
+            console.log(`Sending OTP to restaurant for donationId: ${donationId}`);
+            const otp = await generateAndSendOTP(donationId, 'ngo');
+            return res.status(200).json({ message: 'OTP sent successfully', otp });
+        }
+
+        if (status === 'Out for Delivery' && otp) {
+            console.log(`Verifying OTP for donationId: ${donationId}`);
+            await verifyOTP(donationId, otp, 'ngo');
+        }
+
+        donation.status = status;
+        await donation.save();
+
+        console.log('Donation status updated successfully');
+        res.status(200).json({ message: 'Donation status updated successfully', data: donation });
+    } catch (error){
+        console.error('Error updating donation status:', error);
+        res.status(500).json({ message: 'Server error' });
     }
-  };
-export { getAllFoodDonations, rejectFoodDonation, acceptFoodDonation, getDonationHistory, getActiveDonation, donationRequest, updateDonationStatus } 
+};
+
+
+
+// const verifyOTP = async (donationId, otp) => {
+//     const donation = await FoodDonation.findById(donationId);
+
+//     if (!donation) {
+//         throw new Error('Donation not found');
+//     }
+
+//     if (donation.otp !== otp || donation.otpExpiry < new Date()) {
+//         throw new Error('Invalid or expired OTP');
+//     }
+
+//     // Clear OTP after successful verification
+//     donation.otp = null;
+//     donation.otpExpiry = null;
+//     await donation.save();
+
+//     return true;
+// };
+
+export { getAllFoodDonations, rejectFoodDonation, acceptFoodDonation, getDonationHistory, getActiveDonation, donationRequest, updateDonationStatus, verifyOTP } 

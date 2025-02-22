@@ -49,7 +49,7 @@ const [userName, setUserName] = useState("");
           Individual Data
         </div>
         <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
-          Network
+          Current 
         </div>
         <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800 cursor-pointer"
           onClick={() => setShowLeaderboard(true)}>

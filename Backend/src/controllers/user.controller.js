@@ -7,6 +7,7 @@ import { SingleMeal } from "../models/singleMeal.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { generateAndSendOTP, verifyOTP } from '../utils/otp.js';
 
 const generateAccessToken = async(userId) => {
     try{
@@ -20,6 +21,20 @@ const generateAccessToken = async(userId) => {
         throw new ApiError(500, "Failed to generate tokens");
     }
 } 
+
+// Controller function to get user details by user ID
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 // const loginUser = asyncHandler(async (req, res) => {
 //     const { email, password } = req.body;
@@ -385,16 +400,28 @@ const getActiveDonation = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, activeDonation, "Active donation fetched successfully"));
 });
 
+
 const updateDonationStatus = asyncHandler(async (req, res) => {
     const { donationId } = req.params; // Get the donation ID from the URL parameters
-    const { status } = req.body; // Get the new status from the request body
+    const { status, otp, role } = req.body; // Get the new status and role from the request body
 
     try {
+        console.log(`Updating donation status for donationId: ${donationId}, status: ${status}, role: ${role}`);
+
         // Find the donation by its ID
         const donation = await SingleMeal.findById(donationId);
 
         if (!donation) {
             return res.status(404).json({ message: 'Donation not found' });
+        }
+
+        if (status === 'Arrival for Pick Up') {
+            const otp = await generateAndSendOTP(donationId, role);
+            return res.status(200).json({ message: 'OTP sent successfully', otp });
+        }
+
+        if (status === 'Out for Delivery' && otp) {
+            await verifyOTP(donationId, otp, role);
         }
 
         // Update the donation's status

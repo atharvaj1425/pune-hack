@@ -123,7 +123,7 @@ const getFoodItems = asyncHandler(async (req, res) => {
 
             let newStatus = "";
             if (diffDays > 7) newStatus = "good";
-            else if (diffDays <= 7 && diffDays >= 0) newStatus = "expiring soon";
+            else if (diffDays <= 7 && diffDays > 0) newStatus = "expiring soon";
             else newStatus = "expired";
 
             if (item.status !== newStatus) {

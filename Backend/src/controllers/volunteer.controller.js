@@ -5,6 +5,7 @@ import {FoodItem } from "../models/foodItems.models.js"
 import { FoodDonation } from "../models/fooddonation.models.js";
 import { Volunteer } from "../models/volunteer.models.js"; 
 import { User } from "../models/user.models.js"
+import { generateAndSendOTP, verifyOTP } from '../utils/otp.js';
 
 export const generateAccessToken = async(userId) => {
     try{
@@ -230,31 +231,39 @@ const getActiveDonation = asyncHandler(async(req, res) => {
 
 // Controller for updating the status of a donation
 const updateDonationStatus = async (req, res) => {
-    const { donationId } = req.params; // Get the donation ID from the URL parameters
-    const { status } = req.body; // Get the new status from the request body
-  
+    const { donationId } = req.params;
+    const { status, otp } = req.body;
+
     try {
-      // Find the donation by its ID
-      const donation = await FoodDonation.findById(donationId);
-  
-      if (!donation) {
-        return res.status(404).json({ message: 'Donation not found' });
-      }
-  
-      // Update the donation's status
-      donation.status = status;
-  
-      // Save the updated donation to the database
-      await donation.save();
-  
-      // Return the updated donation
-      res.status(200).json({
-        message: 'Donation status updated successfully',
-        data: donation,
-      });
-    } catch (error) {
-      console.error('Error updating donation status:', error);
-      res.status(500).json({ message: 'Server error' });
+        console.log(`Updating donation status for donationId: ${donationId}, status: ${status}`);
+
+        const donation = await FoodDonation.findById(donationId);
+        if (!donation) {
+            console.error('Donation not found');
+            return res.status(404).json({ message: 'Donation not found' });
+        }
+
+        if (status === 'Arrival for Pick Up') {
+            console.log(`Sending OTP to restaurant for donationId: ${donationId}`);
+            const otp = await generateAndSendOTP(donationId, 'volunteer');
+            return res.status(200).json({ message: 'OTP sent successfully', otp });
+        }
+
+        if (status === 'Out for Delivery' && otp) {
+            console.log(`Verifying OTP for donationId: ${donationId}`);
+            await verifyOTP(donationId, otp, 'volunteer');
+        }
+
+        donation.status = status;
+        await donation.save();
+
+        console.log('Donation status updated successfully');
+        res.status(200).json({ message: 'Donation status updated successfully', data: donation });
+    } catch (error){
+        console.error('Error updating donation status:', error);
+        res.status(500).json({ message: 'Server error' });
     }
-  };
+};
+
+
 export {  getAllFoodDonations, rejectFoodDonation, acceptFoodDonation, getDonationHistory, getActiveDonation,updateDonationStatus }

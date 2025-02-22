@@ -44,7 +44,7 @@ const [userName, setUserName] = useState("");
         <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
           All Data
         </div>
-        <Link to="/current-donation">
+        <Link to="/ngo-current-donation">
           <div className="text-lg font-bold text-black hover:text-green-800 pb-1 border-b-4 border-transparent hover:border-green-800">
             Current Donation
           </div>

@@ -7,6 +7,7 @@ const SingleMealStatus = () => {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [otp, setOtp] = useState('');
 
   useEffect(() => {
     const fetchMeals = async () => {
@@ -29,10 +30,15 @@ const SingleMealStatus = () => {
   const updateStatus = async (mealId, newStatus) => {
     setUpdating(true);
     try {
-      await axios.put(`/api/v1/users/update-status/${mealId}`, {
+      const response = await axios.put(`/api/v1/users/update-status/${mealId}`, {
         status: newStatus,
+        otp: newStatus === 'Out for Delivery' ? otp : undefined,
+        role: 'individual'
       });
       setMeals(meals.map(meal => meal._id === mealId ? { ...meal, status: newStatus } : meal));
+      if (newStatus === 'Arrival for Pick Up') {
+        alert(`OTP sent: ${response.data.otp}`);
+      }
       toast.success(`Meal status updated to ${newStatus} successfully!`);
     } catch (error) {
       console.error('Error updating status:', error);
@@ -67,25 +73,39 @@ const SingleMealStatus = () => {
     }
   };
 
-  const getRoute = (meal) => {
+  const getRoute = async (meal) => {
     if (!meal) return;
 
-    if ("geolocation" in navigator) {
-      navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const destination = encodeURIComponent(`${meal.donor.name}, ${meal.pincode}`);
-          const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${destination}`;
-          window.open(googleMapsUrl, "_blank");
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          alert("Failed to get your location. Please enable GPS.");
-        },
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } // Force fresh location
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
+    try {
+      const donorResponse = await axios.get(`/api/v1/users/${meal.donor._id}`, {
+        withCredentials: true,
+      });
+
+      const donorLocation = donorResponse.data.location;
+
+      if (!donorLocation) {
+        throw new Error("Donor location data is missing");
+      }
+
+      if ("geolocation" in navigator) {
+        navigator.geolocation.watchPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${donorLocation.latitude},${donorLocation.longitude}`;
+            window.open(googleMapsUrl, "_blank");
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+            alert("Failed to get your location. Please enable GPS.");
+          },
+          { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } // Force fresh location
+        );
+      } else {
+        alert("Geolocation is not supported by your browser.");
+      }
+    } catch (error) {
+      console.error("Error getting location:", error);
+      alert("Failed to get location details.");
     }
   };
 
@@ -140,11 +160,29 @@ const SingleMealStatus = () => {
                   {meal.status === "Accepted" && (
                     <button
                       className="bg-yellow-500 text-white px-3 py-1 ml-2 rounded"
-                      onClick={() => updateStatus(meal._id, "Out for Delivery")}
+                      onClick={() => updateStatus(meal._id, "Arrival for Pick Up")}
                       disabled={updating}
                     >
-                      Picked Up
+                      Arrival for Pick Up
                     </button>
+                  )}
+                  {meal.status === "Arrival for Pick Up" && (
+                    <>
+                      <input
+                        type="text"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        placeholder="Enter OTP"
+                        className="ml-2 px-2 py-1 border rounded"
+                      />
+                      <button
+                        className="bg-green-500 text-white px-3 py-1 ml-2 rounded"
+                        onClick={() => updateStatus(meal._id, "Out for Delivery")}
+                        disabled={updating}
+                      >
+                        Confirm Pick Up
+                      </button>
+                    </>
                   )}
                   {meal.status === "Out for Delivery" && (
                     <button
