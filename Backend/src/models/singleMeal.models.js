@@ -1,7 +1,7 @@
 import mongoose, {model, Schema} from "mongoose";
 
 const singleMealSchema = new mongoose.Schema({
-    foodName: {
+    mealDescription: {
         type: String,
         required: true,
     },
